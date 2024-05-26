@@ -12,6 +12,7 @@ import androidx.compose.ui.graphics.toPixelMap
 import androidx.compose.ui.unit.IntSize
 import androidx.test.platform.app.InstrumentationRegistry
 import com.mr0xf00.easycrop.core.crop.CropState
+import com.mr0xf00.easycrop.core.crop.cropState
 import com.mr0xf00.easycrop.core.crop.createResult
 import com.mr0xf00.easycrop.core.crop.flipHorizontal
 import com.mr0xf00.easycrop.core.crop.rotLeft
@@ -31,7 +32,7 @@ class ResultTest {
     fun createState() = runTest {
         val src = ImageStreamSrc(full)
         checkNotNull(src)
-        state = CropState(src)
+        state = cropState(src)
     }
 
     @Test

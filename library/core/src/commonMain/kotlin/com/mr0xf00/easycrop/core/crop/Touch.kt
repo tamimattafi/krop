@@ -12,8 +12,8 @@ import androidx.compose.ui.unit.round
 import androidx.compose.ui.unit.toOffset
 import com.mr0xf00.easycrop.core.utils.ViewMat
 import com.mr0xf00.easycrop.core.utils.abs
-import com.mr0xf00.easycrop.core.utils.DragState
-import com.mr0xf00.easycrop.core.utils.ZoomState
+import com.mr0xf00.easycrop.core.utils.dragState
+import com.mr0xf00.easycrop.core.utils.zoomState
 import com.mr0xf00.easycrop.core.utils.onGestures
 import com.mr0xf00.easycrop.core.utils.rememberGestureState
 import com.mr0xf00.easycrop.core.utils.resize
@@ -41,11 +41,11 @@ fun Modifier.cropperTouch(
     MaterialTheme
     onGestures(
         rememberGestureState(
-            zoom = ZoomState(
+            zoom = zoomState(
                 begin = { c -> viewMat.zoomStart(c) },
                 next = { s, c -> viewMat.zoom(c, s) },
             ),
-            drag = DragState(
+            drag = dragState(
                 begin = { pos ->
                     val localPos = viewMat.invMatrix.map(pos)
                     handles.findHandle(

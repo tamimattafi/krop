@@ -4,12 +4,25 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.GenericShape
 import androidx.compose.material.Surface
-import androidx.compose.runtime.*
-import androidx.compose.ui.geometry.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.geometry.CornerRadius
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.RoundRect
+import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.geometry.toRect
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.unit.*
+import androidx.compose.ui.unit.IntOffset
+import androidx.compose.ui.unit.IntRect
+import androidx.compose.ui.unit.IntSize
+import androidx.compose.ui.unit.LayoutDirection
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.toIntRect
 import androidx.compose.ui.window.Popup
 import androidx.compose.ui.window.PopupPositionProvider
 import com.mr0xf00.easycrop.core.utils.constrainOffset
@@ -22,7 +35,6 @@ private fun PopupSide.isLeft(dir: LayoutDirection) =
     (this == PopupSide.Start && dir == LayoutDirection.Ltr) ||
             (this == PopupSide.End && dir == LayoutDirection.Rtl)
 
-@Composable
 private fun rememberPopupPos(
     side: PopupSide,
     onAnchorPos: (pos: IntOffset) -> Unit

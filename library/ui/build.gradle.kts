@@ -20,7 +20,7 @@ kotlin {
         androidMain.dependencies {
             // Android
             implementation(libs.android.core.ktx)
-            implementation(libs.android.lifecycle.runtime.ktx)
+            implementation(libs.android.lifecycle.runtime)
             implementation(libs.android.activity.compose)
         }
     }

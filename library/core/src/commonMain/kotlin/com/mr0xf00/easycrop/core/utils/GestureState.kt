@@ -9,10 +9,16 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.input.pointer.*
+import androidx.compose.ui.input.pointer.PointerEvent
+import androidx.compose.ui.input.pointer.PointerEventPass
+import androidx.compose.ui.input.pointer.PointerId
+import androidx.compose.ui.input.pointer.PointerInputChange
+import androidx.compose.ui.input.pointer.changedToDown
+import androidx.compose.ui.input.pointer.changedToUp
+import androidx.compose.ui.input.pointer.pointerInput
+import kotlin.math.max
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
-import kotlin.math.max
 
 interface GestureState {
     val zoom: ZoomState
@@ -26,7 +32,7 @@ interface DragState {
     fun onDone() = Unit
 }
 
-inline fun DragState(
+inline fun dragState(
     crossinline begin: (pos: Offset) -> Unit = { },
     crossinline done: () -> Unit = {},
     crossinline next: (delta: Offset, pos: Offset, pointers: Int) -> Unit = { _, _, _ -> },
@@ -43,7 +49,7 @@ interface TapState {
     fun onLongPress(x: Float, y: Float, pointers: Int) = Unit
 }
 
-inline fun TapState(
+inline fun tapState(
     crossinline longPress: (pos: Offset, pointers: Int) -> Unit = { _, _ -> },
     crossinline tap: (pos: Offset, pointers: Int) -> Unit = { _, _ -> },
 ) = object : TapState {
@@ -57,7 +63,7 @@ interface ZoomState {
     fun onDone() = Unit
 }
 
-inline fun ZoomState(
+inline fun zoomState(
     crossinline begin: (center: Offset) -> Unit = { },
     crossinline done: () -> Unit = {},
     crossinline next: (scale: Float, center: Offset) -> Unit = { _, _ -> },

@@ -55,7 +55,7 @@ interface CropperStyle {
     val autoZoom: Boolean
 }
 
-val DefaultCropperStyle: CropperStyle by lazy { CropperStyle() }
+val DefaultCropperStyle: CropperStyle by lazy { cropperStyle() }
 
 val LocalCropperStyle = staticCompositionLocalOf { DefaultCropperStyle }
 
@@ -77,8 +77,8 @@ val DefaultAspectRatios = listOf(
     AspectRatio(4, 3)
 )
 
-/** Creates a [CropperStyle] instance with the default behavior. */
-fun CropperStyle(
+/** Creates a [cropperStyle] instance with the default behavior. */
+fun cropperStyle(
     backgroundColor: Color = Color.Black,
     rectColor: Color = Color.White,
     rectStrokeWidth: Dp = 2.dp,

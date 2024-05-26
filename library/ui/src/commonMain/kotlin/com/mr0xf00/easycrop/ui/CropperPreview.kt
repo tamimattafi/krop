@@ -21,6 +21,7 @@ import com.mr0xf00.easycrop.core.crop.asMatrix
 import com.mr0xf00.easycrop.core.crop.cropperTouch
 import com.mr0xf00.easycrop.core.images.rememberLoadedImage
 import com.mr0xf00.easycrop.core.utils.ViewMat
+import com.mr0xf00.easycrop.core.utils.viewMat
 import com.mr0xf00.easycrop.core.utils.times
 import kotlinx.coroutines.delay
 
@@ -32,7 +33,7 @@ fun CropperPreview(
     val style = LocalCropperStyle.current
     val imgTransform by animateImgTransform(target = state.transform)
     val imgMat = remember(imgTransform, state.src.size) { imgTransform.asMatrix(state.src.size) }
-    val viewMat = remember { ViewMat() }
+    val viewMat = remember { viewMat() }
     var view by remember { mutableStateOf(IntSize.Zero) }
     var pendingDrag by remember { mutableStateOf<DragHandle?>(null) }
     val viewPadding = LocalDensity.current.run { style.touchRad.toPx() }

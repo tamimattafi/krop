@@ -20,7 +20,7 @@ enum class CropError : CropResult {
     /** The supplied image is invalid, not supported by the codec
      * or you don't have the required permissions to read it */
     LoadingError,
-    /** The result could not be saved. Try reducing the maxSize supplied to [ImageCropper.crop] */
+    /** The result could not be saved. Try reducing the maxSize supplied to [imageCropper.crop] */
     SavingError
 }
 
@@ -79,13 +79,13 @@ suspend fun ImageCropper.cropSrc(
 
 @Composable
 fun rememberImageCropper() : ImageCropper {
-    return remember { ImageCropper() }
+    return remember { imageCropper() }
 }
 
 /**
- * Creates an [ImageCropper] instance.
+ * Creates an [imageCropper] instance.
  */
-fun ImageCropper(): ImageCropper = object : ImageCropper {
+fun imageCropper(): ImageCropper = object : ImageCropper {
     override var cropState: CropState? by mutableStateOf(null)
     private val cropStateFlow = snapshotFlow { cropState }
     override var loadingStatus: CropperLoading? by mutableStateOf(null)
@@ -96,7 +96,7 @@ fun ImageCropper(): ImageCropper = object : ImageCropper {
         cropState = null
         val src = withLoading(CropperLoading.PreparingImage) { createSrc() }
             ?: return CropError.LoadingError
-        val newCrop = CropState(src) { cropState = null }
+        val newCrop = cropState(src) { cropState = null }
         cropState = newCrop
         cropStateFlow.takeWhile { it === newCrop }.collect()
         if (!newCrop.accepted) return CropResult.Cancelled

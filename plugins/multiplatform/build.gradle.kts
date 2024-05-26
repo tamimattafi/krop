@@ -3,6 +3,15 @@ plugins {
     id(libs.plugins.java.gradle.plugin.get().pluginId)
 }
 
+kotlin {
+    jvmToolchain(17)
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
+}
+
 gradlePlugin {
     plugins.create("multiplatform") {
         id = "com.mr0xf00.easycrop.multiplatform"
