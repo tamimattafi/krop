@@ -17,13 +17,11 @@ import com.mr0xf00.easycrop.core.crop.flipHorizontal
 import com.mr0xf00.easycrop.core.crop.rotLeft
 import com.mr0xf00.easycrop.core.images.ImageStream
 import com.mr0xf00.easycrop.core.images.ImageStreamSrc
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert
-import org.junit.Test
 import org.junit.Before
+import org.junit.Test
 
-@OptIn(ExperimentalCoroutinesApi::class)
 class ResultTest {
 
     private lateinit var state: CropState

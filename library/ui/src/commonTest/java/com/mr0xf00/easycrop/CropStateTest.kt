@@ -4,13 +4,9 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.toIntRect
-import com.mr0xf00.easycrop.CropState
-import com.mr0xf00.easycrop.flipX
-import com.mr0xf00.easycrop.getTransformedImageRect
 import com.mr0xf00.easycrop.images.DecodeParams
 import com.mr0xf00.easycrop.images.DecodeResult
 import com.mr0xf00.easycrop.images.ImageSrc
-import com.mr0xf00.easycrop.rotLeft
 import com.mr0xf00.easycrop.utils.containsInclusive
 import com.mr0xf00.easycrop.utils.resize
 import com.mr0xf00.easycrop.utils.roundOut
