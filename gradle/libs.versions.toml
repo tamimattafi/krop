@@ -2,15 +2,22 @@
 # Kotlin
 kotlin = "1.9.24"
 kotlin-coroutines = "1.8.1"
+kotlin-jvm-target = "1.8"
 
 # Compose
+compose = "1.6.7"
 compose_plugin = "1.6.10"
 compose_compiler = "1.5.14"
 
 # Android
 android-gradle-plugin = "8.3.2"
-appcompat = "1.6.1"
-core-ktx = "1.13.1"
+android-app-compat = "1.6.1"
+android-core-ktx = "1.13.1"
+android-activity-compose = "1.9.0"
+android-lifecycle-runtime-ktx = "2.8.0"
+android-test-runner = "1.5.2"
+android-espresso = "3.5.1"
+
 
 # Docs
 dokka = "1.9.20"
@@ -30,16 +37,25 @@ kotlin-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-co
 
 # Android
 android-build-tools = { module = "com.android.tools.build:gradle", version.ref = "android-gradle-plugin"}
-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "core-ktx" }
+android-app-compat = { group = "androidx.appcompat", name = "appcompat", version.ref = "android-app-compat" }
+android-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "android-core-ktx" }
+android-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "android-activity-compose" }
+android-lifecycle-runtime-ktx = { module = "androidx.lifecycle:lifecycle-runtime-ktx", version.ref = "android-lifecycle-runtime-ktx" }
+android-compose-preview = { module = "androidx.compose.ui:ui-tooling-preview", version.ref = "compose" }
 
 # Publish
 maven-publish-plugin = { module = "com.vanniktech.maven.publish.base:com.vanniktech.maven.publish.base.gradle.plugin", version.ref = "maven-publish" }
 
 # Testing
 junit = { group = "junit", name = "junit", version.ref = "junit" }
-androidx-test-ext-junit = { group = "androidx.test.ext", name = "junit", version.ref = "androidx-test-ext-junit" }
-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espresso-core" }
+android-test-ext-junit = { group = "androidx.test.ext", name = "junit", version.ref = "androidx-test-ext-junit" }
+android-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espresso-core" }
+kotlin-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlin-coroutines" }
+android-compose-junit = { module = "androidx.compose.ui:ui-test-junit4", version.ref = "compose" }
+android-compose-test-manifest = { module = "androidx.compose.ui:ui-test-manifest", version.ref = "compose" }
+android-test-runner = { module = "androidx.test:runner", version.ref = "android-test-runner" }
+android-espresso = { module = "androidx.test.espresso:espresso-core", version.ref = "android-espresso" }
+
 
 [plugins]
 # Kotlin

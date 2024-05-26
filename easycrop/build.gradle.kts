@@ -27,18 +27,25 @@ android {
     }
 
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = libs.versions.kotlin.jvm.target.get()
     }
 }
 
 dependencies {
+    // Compose
     implementation(compose.runtime)
-    implementation ("androidx.core:core-ktx:1.9.0")
-    testImplementation ("junit:junit:4.13.2")
-    androidTestImplementation ("androidx.test.ext:junit:1.1.5")
-    implementation ("androidx.lifecycle:lifecycle-runtime-ktx:2.5.1")
-    implementation ("androidx.activity:activity-compose:1.6.1")
-    implementation ("androidx.compose.material:material:1.6.1")
-    implementation ("androidx.compose.ui:ui:1.6.1")
-    androidTestImplementation ("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.4")
+    implementation(compose.material)
+    implementation(compose.ui)
+
+    // Android
+    implementation(libs.android.core.ktx)
+    implementation(libs.android.lifecycle.runtime.ktx)
+    implementation(libs.android.activity.compose)
+
+    // Testing
+    testImplementation(libs.junit)
+    androidTestImplementation(libs.android.test.runner)
+    androidTestImplementation(libs.android.espresso)
+    androidTestImplementation(libs.kotlin.coroutines.test)
+    androidTestImplementation(libs.android.test.ext.junit)
 }

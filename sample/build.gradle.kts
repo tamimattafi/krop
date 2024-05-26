@@ -45,7 +45,7 @@ android {
     }
 
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = libs.versions.kotlin.jvm.target.get()
     }
 
     packagingOptions {
@@ -56,23 +56,26 @@ android {
 }
 
 dependencies {
-    implementation(compose.runtime)
-
-    implementation("androidx.core:core-ktx:1.9.0")
-    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.5.1")
-    implementation("androidx.activity:activity-compose:1.6.1")
-    implementation("androidx.compose.ui:ui:1.6.1")
-    implementation("androidx.compose.ui:ui-tooling-preview:1.6.1")
-    implementation("androidx.compose.material:material:1.6.1")
-    testImplementation("junit:junit:4.13.2")
-    androidTestImplementation("androidx.test.ext:junit:1.1.5")
-    androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.6.1")
-    debugImplementation("androidx.compose.ui:ui-tooling:1.6.1")
-    debugImplementation("androidx.compose.ui:ui-test-manifest:1.6.1")
-    implementation("androidx.core:core-ktx:1.9.0")
-    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.5.1")
-    implementation("androidx.activity:activity-compose:1.6.1")
-    implementation("androidx.compose.ui:ui:1.6.1")
-    implementation("androidx.compose.material:material:1.6.1")
+    // Library
     implementation(project(":easycrop"))
+
+    // Compose
+    implementation(compose.runtime)
+    implementation(compose.ui)
+    implementation(compose.material)
+    debugImplementation(compose.uiTooling)
+
+    // Android
+    debugImplementation(libs.android.compose.test.manifest)
+    implementation(libs.android.compose.preview)
+    implementation(libs.android.core.ktx)
+    implementation(libs.android.lifecycle.runtime.ktx)
+    implementation(libs.android.activity.compose)
+
+    // Testing
+    testImplementation(libs.junit)
+    androidTestImplementation(libs.android.test.runner)
+    androidTestImplementation(libs.android.espresso)
+    androidTestImplementation(libs.android.test.ext.junit)
+    androidTestImplementation(libs.android.compose.junit)
 }
