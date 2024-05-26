@@ -56,8 +56,9 @@ android {
 }
 
 dependencies {
+    implementation(project(":library:core"))
+    implementation(project(":library:ui"))
     // Library
-    implementation(project(":easycrop"))
 
     // Compose
     implementation(compose.runtime)

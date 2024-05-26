@@ -9,8 +9,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
-import com.mr0xf00.easycrop.CropError
-import com.mr0xf00.easycrop.CropperLoading
+import com.mr0xf00.easycrop.core.crop.CropError
+import com.mr0xf00.easycrop.core.crop.CropperLoading
 
 @Composable
 fun CropErrorDialog(error: CropError, onDismiss: () -> Unit) {

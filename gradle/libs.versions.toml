@@ -82,3 +82,4 @@ maven-publish = { id = "com.vanniktech.maven.publish", version.ref = "maven-publ
 
 # Convention
 publish = { id = "com.mr0xf00.easycrop.publish" }
+multiplatform = { id = "com.mr0xf00.easycrop.multiplatform" }

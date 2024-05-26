@@ -5,10 +5,11 @@ import android.net.Uri
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import com.mr0xf00.easycrop.CropError
-import com.mr0xf00.easycrop.CropResult
-import com.mr0xf00.easycrop.ImageCropper
-import com.mr0xf00.easycrop.crop
+import com.mr0xf00.easycrop.core.crop.CropError
+import com.mr0xf00.easycrop.core.crop.CropResult
+import com.mr0xf00.easycrop.core.crop.ImageCropper
+import com.mr0xf00.easycrop.core.crop.cropSrc
+import com.mr0xf00.easycrop.core.images.ImageSrc
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
@@ -24,9 +25,9 @@ class ImagesViewModel(private val app: Application) : AndroidViewModel(app) {
         _cropError.value = null
     }
 
-    fun setSelectedImage(uri: Uri) {
+    fun setSelectedImage(imageSrc: ImageSrc) {
         viewModelScope.launch {
-            when(val result = imageCropper.crop(uri, app)) {
+            when(val result = imageCropper.cropSrc(imageSrc)) {
                 CropResult.Cancelled -> {}
                 is CropError -> _cropError.value = result
                 is CropResult.Success -> {

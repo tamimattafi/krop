@@ -7,8 +7,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.unit.dp
-import com.mr0xf00.easycrop.CropState
-import com.mr0xf00.easycrop.CropperLoading
+import com.mr0xf00.easycrop.core.crop.CropState
+import com.mr0xf00.easycrop.core.crop.CropperLoading
 import com.mr0xf00.easycrop.ui.theme.EasyCropTheme
 
 @Composable

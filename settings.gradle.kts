@@ -18,5 +18,6 @@ dependencyResolutionManagement {
 }
 
 rootProject.name = "EasyCrop"
-include(":easycrop")
+include(":library:core")
+include(":library:ui")
 include(":sample")
