@@ -1,8 +1,6 @@
 plugins {
-    kotlin("android")
-    id ("com.android.library")
-    id("maven-publish")
-    id("signing")
+    alias(libs.plugins.android.library)
+    alias(libs.plugins.kotlin.android)
 }
 
 val composeBomVersion : String by project
@@ -10,24 +8,26 @@ val composeCompilerVersion : String by project
 
 android {
     namespace = "com.mr0xf00.easycrop"
-    compileSdk = 33
+    compileSdk = 34
 
     defaultConfig {
         minSdk = 21
-        targetSdk = 33
-
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
+
     composeOptions {
         kotlinCompilerExtensionVersion = composeCompilerVersion
     }
+
     buildFeatures {
         compose = true
     }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
     }
+
     kotlinOptions {
         jvmTarget = "1.8"
     }
