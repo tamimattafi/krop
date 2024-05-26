@@ -1,10 +1,8 @@
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.compose)
 }
-
-val composeBomVersion : String by project
-val composeCompilerVersion : String by project
 
 android {
     namespace = "com.mr0xf00.easycrop"
@@ -16,7 +14,7 @@ android {
     }
 
     composeOptions {
-        kotlinCompilerExtensionVersion = composeCompilerVersion
+        kotlinCompilerExtensionVersion = libs.versions.compose.compiler.get()
     }
 
     buildFeatures {
@@ -34,13 +32,13 @@ android {
 }
 
 dependencies {
-    implementation(platform("androidx.compose:compose-bom:$composeBomVersion"))
+    implementation(compose.runtime)
     implementation ("androidx.core:core-ktx:1.9.0")
     testImplementation ("junit:junit:4.13.2")
     androidTestImplementation ("androidx.test.ext:junit:1.1.5")
     implementation ("androidx.lifecycle:lifecycle-runtime-ktx:2.5.1")
     implementation ("androidx.activity:activity-compose:1.6.1")
-    implementation ("androidx.compose.material:material")
-    implementation ("androidx.compose.ui:ui")
+    implementation ("androidx.compose.material:material:1.6.1")
+    implementation ("androidx.compose.ui:ui:1.6.1")
     androidTestImplementation ("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.4")
 }

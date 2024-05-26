@@ -1,10 +1,8 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.compose)
 }
-
-val composeBomVersion : String by project
-val composeCompilerVersion : String by project
 
 android {
     namespace = "com.mr0xf00.easycrop"
@@ -39,7 +37,7 @@ android {
     }
 
     composeOptions {
-        kotlinCompilerExtensionVersion = composeCompilerVersion
+        kotlinCompilerExtensionVersion = libs.versions.compose.compiler.get()
     }
 
     buildFeatures {
@@ -58,25 +56,23 @@ android {
 }
 
 dependencies {
-    val composeBom = platform("androidx.compose:compose-bom:$composeBomVersion")
-    implementation(composeBom)
-    androidTestImplementation(composeBom)
+    implementation(compose.runtime)
 
     implementation("androidx.core:core-ktx:1.9.0")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.5.1")
     implementation("androidx.activity:activity-compose:1.6.1")
-    implementation("androidx.compose.ui:ui")
-    implementation("androidx.compose.ui:ui-tooling-preview")
-    implementation("androidx.compose.material:material")
+    implementation("androidx.compose.ui:ui:1.6.1")
+    implementation("androidx.compose.ui:ui-tooling-preview:1.6.1")
+    implementation("androidx.compose.material:material:1.6.1")
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
-    androidTestImplementation("androidx.compose.ui:ui-test-junit4")
-    debugImplementation("androidx.compose.ui:ui-tooling")
-    debugImplementation("androidx.compose.ui:ui-test-manifest")
+    androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.6.1")
+    debugImplementation("androidx.compose.ui:ui-tooling:1.6.1")
+    debugImplementation("androidx.compose.ui:ui-test-manifest:1.6.1")
     implementation("androidx.core:core-ktx:1.9.0")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.5.1")
     implementation("androidx.activity:activity-compose:1.6.1")
-    implementation("androidx.compose.ui:ui")
-    implementation("androidx.compose.material:material")
+    implementation("androidx.compose.ui:ui:1.6.1")
+    implementation("androidx.compose.material:material:1.6.1")
     implementation(project(":easycrop"))
 }
