@@ -81,5 +81,4 @@ dokka = { id = "org.jetbrains.dokka", version.ref = "dokka" }
 maven-publish = { id = "com.vanniktech.maven.publish", version.ref = "maven-publish"}
 
 # Convention
-convention-multiplatform = { id = "com.attafitamim.kabin.multiplatform" }
-convention-publish = { id = "com.attafitamim.kabin.publish" }
+publish = { id = "com.mr0xf00.easycrop.publish" }

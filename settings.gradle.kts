@@ -4,6 +4,8 @@ pluginManagement {
         google()
         mavenCentral()
     }
+
+    includeBuild("plugins")
 }
 
 @Suppress("UnstableApiUsage")
