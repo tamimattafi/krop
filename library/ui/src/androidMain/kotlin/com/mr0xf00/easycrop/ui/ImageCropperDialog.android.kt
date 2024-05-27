@@ -5,5 +5,5 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalConfiguration
 
 @Composable
-actual fun isLandscape(): Boolean =
+actual fun isVerticalPickerControls(): Boolean =
     LocalConfiguration.current.orientation == Configuration.ORIENTATION_LANDSCAPE

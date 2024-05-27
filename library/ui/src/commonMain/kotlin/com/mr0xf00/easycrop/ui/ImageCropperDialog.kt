@@ -1,6 +1,11 @@
 package com.mr0xf00.easycrop.ui
 
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
@@ -33,7 +38,7 @@ val CropperDialogProperties = (DialogProperties(
 ))
 
 @Composable
-expect fun isLandscape(): Boolean
+expect fun isVerticalPickerControls(): Boolean
 
 @Composable
 fun ImageCropperDialog(
@@ -72,7 +77,7 @@ fun ImageCropperDialog(
 
 @Composable
 fun BoxScope.DefaultControls(state: CropState) {
-    val verticalControls = isLandscape()
+    val verticalControls = isVerticalPickerControls()
     CropperControls(
         isVertical = verticalControls,
         state = state,

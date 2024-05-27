@@ -27,15 +27,15 @@ import androidx.compose.ui.window.Popup
 import androidx.compose.ui.window.PopupPositionProvider
 import com.mr0xf00.easycrop.core.utils.constrainOffset
 
-private enum class PopupSide {
+enum class PopupSide {
     Start, End, Top, Bottom
 }
-private val PopupSide.isHorizontal get() = this == PopupSide.Start || this == PopupSide.End
-private fun PopupSide.isLeft(dir: LayoutDirection) =
+val PopupSide.isHorizontal get() = this == PopupSide.Start || this == PopupSide.End
+fun PopupSide.isLeft(dir: LayoutDirection) =
     (this == PopupSide.Start && dir == LayoutDirection.Ltr) ||
             (this == PopupSide.End && dir == LayoutDirection.Rtl)
 
-private fun rememberPopupPos(
+fun rememberPopupPos(
     side: PopupSide,
     onAnchorPos: (pos: IntOffset) -> Unit
 ) = object : PopupPositionProvider {
@@ -56,7 +56,7 @@ private fun rememberPopupPos(
     }
 }
 
-private fun placePopup(
+fun placePopup(
     rect: IntRect,
     anchor: IntRect,
     side: PopupSide,
@@ -76,7 +76,7 @@ private fun placePopup(
 }
 
 @Composable
-private fun popupShape(anchorPos: IntOffset): Shape {
+fun popupShape(anchorPos: IntOffset): Shape {
     val rad = LocalDensity.current.run { 8.dp.toPx() }
     return remember(anchorPos) {
         GenericShape { size, _ ->
@@ -90,7 +90,7 @@ private fun popupShape(anchorPos: IntOffset): Shape {
     }
 }
 
-private fun createIndicator(shapeSize: Size, anchor: IntOffset, rad: Float): Path {
+fun createIndicator(shapeSize: Size, anchor: IntOffset, rad: Float): Path {
     val x = anchor.x.toFloat().coerceIn(rad, shapeSize.width - rad)
     val y = anchor.y.toFloat().coerceIn(rad, shapeSize.height - rad)
     val (from, vec) = when {

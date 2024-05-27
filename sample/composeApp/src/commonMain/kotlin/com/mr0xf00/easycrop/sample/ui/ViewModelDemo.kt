@@ -2,8 +2,8 @@ package com.mr0xf00.easycrop.sample.ui
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
+import com.mr0xf00.easycrop.sample.picker.rememberImagePicker
 import com.mr0xf00.easycrop.sample.presentation.ImagesViewModel
-import com.mr0xf00.easycrop.ui.rememberImagePicker
 
 @Composable
 fun ViewModelDemo(viewModel: ImagesViewModel, modifier: Modifier = Modifier) {

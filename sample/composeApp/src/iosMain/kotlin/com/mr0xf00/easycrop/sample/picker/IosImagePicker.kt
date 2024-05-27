@@ -1,4 +1,4 @@
-package com.mr0xf00.easycrop.ui
+package com.mr0xf00.easycrop.sample.picker
 
 import platform.UIKit.UIApplication
 import platform.UIKit.UIImagePickerController

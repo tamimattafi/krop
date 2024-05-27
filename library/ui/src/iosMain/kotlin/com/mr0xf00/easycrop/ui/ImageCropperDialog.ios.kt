@@ -6,7 +6,7 @@ import platform.UIKit.UIDevice
 import platform.UIKit.UIDeviceOrientation
 
 @Composable
-actual fun isLandscape(): Boolean {
+actual fun isVerticalPickerControls(): Boolean {
     val orientation = remember {
         UIDevice.currentDevice.orientation
     }

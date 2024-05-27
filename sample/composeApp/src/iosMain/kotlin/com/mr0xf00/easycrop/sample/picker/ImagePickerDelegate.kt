@@ -1,4 +1,4 @@
-package com.mr0xf00.easycrop.ui
+package com.mr0xf00.easycrop.sample.picker
 
 import com.mr0xf00.easycrop.core.images.ImageBitmapSrc
 import com.mr0xf00.easycrop.core.images.ImageSrc

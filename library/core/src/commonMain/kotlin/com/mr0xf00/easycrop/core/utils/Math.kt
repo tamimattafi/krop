@@ -3,7 +3,7 @@ package com.mr0xf00.easycrop.core.utils
 import androidx.compose.ui.geometry.Offset
 import kotlin.math.*
 
-private const val Eps: Float = 2.4414062E-4f
+const val Eps: Float = 2.4414062E-4f
 
 fun Float.eq0(): Boolean = abs(this) <= Eps
 infix fun Float.eq(v: Float): Boolean = abs(v - this) <= Eps

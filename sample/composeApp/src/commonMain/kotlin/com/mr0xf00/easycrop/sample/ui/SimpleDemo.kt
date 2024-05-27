@@ -11,7 +11,7 @@ import com.mr0xf00.easycrop.core.crop.CropError
 import com.mr0xf00.easycrop.core.crop.CropResult
 import com.mr0xf00.easycrop.core.crop.cropSrc
 import com.mr0xf00.easycrop.core.crop.rememberImageCropper
-import com.mr0xf00.easycrop.ui.rememberImagePicker
+import com.mr0xf00.easycrop.sample.picker.rememberImagePicker
 import kotlinx.coroutines.launch
 
 @Composable

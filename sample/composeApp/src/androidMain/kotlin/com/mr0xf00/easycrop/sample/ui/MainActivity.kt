@@ -1,4 +1,4 @@
-package com.mr0xf00.easycrop.ui
+package com.mr0xf00.easycrop.sample.ui
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity

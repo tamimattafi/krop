@@ -2,7 +2,13 @@ package com.mr0xf00.easycrop.ui
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.geometry.toRect
@@ -21,8 +27,8 @@ import com.mr0xf00.easycrop.core.crop.asMatrix
 import com.mr0xf00.easycrop.core.crop.cropperTouch
 import com.mr0xf00.easycrop.core.images.rememberLoadedImage
 import com.mr0xf00.easycrop.core.utils.ViewMat
-import com.mr0xf00.easycrop.core.utils.viewMat
 import com.mr0xf00.easycrop.core.utils.times
+import com.mr0xf00.easycrop.core.utils.viewMat
 import kotlinx.coroutines.delay
 
 @Composable
@@ -80,7 +86,7 @@ fun CropperPreview(
 }
 
 @Composable
-private fun BringToView(
+fun BringToView(
     enabled: Boolean,
     hasOverride: Boolean,
     outer: Rect,

@@ -1,4 +1,4 @@
-package com.mr0xf00.easycrop.ui
+package com.mr0xf00.easycrop.sample.picker
 
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -8,6 +8,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.platform.LocalContext
 import com.mr0xf00.easycrop.core.images.ImageSrc
 import com.mr0xf00.easycrop.core.images.toImageSrc
+import com.mr0xf00.easycrop.sample.picker.ImagePicker
 import kotlinx.coroutines.launch
 
 /** Creates and remembers a instance of [ImagePicker] that launches

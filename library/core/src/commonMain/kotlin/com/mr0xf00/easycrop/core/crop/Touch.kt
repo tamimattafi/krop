@@ -13,10 +13,10 @@ import androidx.compose.ui.unit.toOffset
 import com.mr0xf00.easycrop.core.utils.ViewMat
 import com.mr0xf00.easycrop.core.utils.abs
 import com.mr0xf00.easycrop.core.utils.dragState
-import com.mr0xf00.easycrop.core.utils.zoomState
 import com.mr0xf00.easycrop.core.utils.onGestures
 import com.mr0xf00.easycrop.core.utils.rememberGestureState
 import com.mr0xf00.easycrop.core.utils.resize
+import com.mr0xf00.easycrop.core.utils.zoomState
 
 private val MoveHandle = Offset(.5f, .5f)
 
@@ -75,7 +75,7 @@ fun Modifier.cropperTouch(
     )
 }
 
-private fun List<Offset>.findHandle(
+fun List<Offset>.findHandle(
     region: Rect,
     pos: Offset,
     touchRadPx2: Float

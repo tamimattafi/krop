@@ -8,11 +8,11 @@ import androidx.compose.ui.graphics.Paint
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.toSize
 import com.mr0xf00.easycrop.core.images.getDecodeParams
-import com.mr0xf00.easycrop.core.utils.*
-import com.mr0xf00.easycrop.core.utils.viewMat
 import com.mr0xf00.easycrop.core.utils.atOrigin
 import com.mr0xf00.easycrop.core.utils.coerceAtMost
 import com.mr0xf00.easycrop.core.utils.roundUp
+import com.mr0xf00.easycrop.core.utils.times
+import com.mr0xf00.easycrop.core.utils.viewMat
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -29,7 +29,7 @@ suspend fun CropState.createResult(
         .getOrNull()
 }
 
-private suspend fun CropState.doCreateResult(maxSize: IntSize?): ImageBitmap? {
+suspend fun CropState.doCreateResult(maxSize: IntSize?): ImageBitmap? {
     val finalSize = region.size
         .coerceAtMost(maxSize?.toSize())
         .roundUp()
