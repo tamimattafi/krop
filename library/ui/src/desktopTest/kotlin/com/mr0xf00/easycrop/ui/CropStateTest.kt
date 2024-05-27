@@ -1,16 +1,21 @@
-package com.mr0xf00.easycrop
+package com.mr0xf00.easycrop.ui
 
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.toIntRect
-import com.mr0xf00.easycrop.images.DecodeParams
-import com.mr0xf00.easycrop.images.DecodeResult
-import com.mr0xf00.easycrop.images.ImageSrc
-import com.mr0xf00.easycrop.utils.containsInclusive
-import com.mr0xf00.easycrop.utils.resize
-import com.mr0xf00.easycrop.utils.roundOut
-import com.mr0xf00.easycrop.utils.scale
+import com.mr0xf00.easycrop.core.crop.CropState
+import com.mr0xf00.easycrop.core.crop.cropState
+import com.mr0xf00.easycrop.core.crop.flipX
+import com.mr0xf00.easycrop.core.crop.getTransformedImageRect
+import com.mr0xf00.easycrop.core.crop.rotLeft
+import com.mr0xf00.easycrop.core.images.DecodeParams
+import com.mr0xf00.easycrop.core.images.DecodeResult
+import com.mr0xf00.easycrop.core.images.ImageSrc
+import com.mr0xf00.easycrop.core.utils.containsInclusive
+import com.mr0xf00.easycrop.core.utils.resize
+import com.mr0xf00.easycrop.core.utils.roundOut
+import com.mr0xf00.easycrop.core.utils.scale
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
@@ -21,7 +26,7 @@ class CropStateTest {
 
     @Before
     fun createState() {
-        state = CropState(emptyImage(size))
+        state = cropState(emptyImage(size))
     }
 
     @Test

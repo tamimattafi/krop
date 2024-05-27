@@ -20,6 +20,10 @@ class MultiplatformConventions : Plugin<Project> {
       applyDefaultHierarchyTemplate()
       jvmToolchain(17)
 
+      // JS
+      jvm("desktop")
+
+      // Android
       androidTarget {
         compilations.all {
           it.kotlinOptions {
@@ -32,6 +36,17 @@ class MultiplatformConventions : Plugin<Project> {
       iosSimulatorArm64()
       iosX64()
       iosArm64()
+
+      // JS
+      js {
+        browser()
+      }
+
+      // Wasm
+      @OptIn(org.jetbrains.kotlin.gradle.targets.js.dsl.ExperimentalWasmDsl::class)
+      wasmJs {
+        binaries.executable()
+      }
     }
 
     val javaExtension = project.extensions.getByName("java") as JavaPluginExtension

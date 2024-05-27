@@ -30,8 +30,7 @@ kotlin {
     sourceSets {
         commonMain.dependencies {
             // Library
-            implementation(project(":library:core"))
-            implementation(project(":library:ui"))
+            implementation(projects.library.ui)
 
             // Compose
             implementation(compose.runtime)

@@ -1,6 +1,5 @@
 package com.mr0xf00.easycrop.core.crop
 
-import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
@@ -38,7 +37,7 @@ fun Modifier.cropperTouch(
     val touchRadPx2 = LocalDensity.current.run {
         remember(touchRad, viewMat.scale) { touchRad.toPx() / viewMat.scale }.let { it * it }
     }
-    MaterialTheme
+
     onGestures(
         rememberGestureState(
             zoom = zoomState(

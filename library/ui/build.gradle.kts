@@ -8,20 +8,13 @@ kotlin {
     sourceSets {
         commonMain.dependencies {
             // Library
-            implementation(project(":library:core"))
+            api(projects.library.core)
 
             // Compose
             implementation(compose.runtime)
-            implementation(compose.material)
             implementation(compose.ui)
+            implementation(compose.material)
             implementation(compose.components.resources)
-        }
-
-        androidMain.dependencies {
-            // Android
-            implementation(libs.android.core.ktx)
-            implementation(libs.android.lifecycle.runtime)
-            implementation(libs.android.activity.compose)
         }
     }
 }
@@ -38,9 +31,7 @@ android {
 
 dependencies {
     // Testing
-    testImplementation(libs.junit)
+    desktopTestImplementation(libs.junit)
     androidTestImplementation(libs.android.test.runner)
-    androidTestImplementation(libs.android.espresso)
     androidTestImplementation(libs.kotlin.coroutines.test)
-    androidTestImplementation(libs.android.test.ext.junit)
 }

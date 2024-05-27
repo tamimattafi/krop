@@ -1,3 +1,4 @@
+enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 pluginManagement {
     repositories {
         gradlePluginPortal()
@@ -20,5 +21,4 @@ dependencyResolutionManagement {
 rootProject.name = "EasyCrop"
 include(":library:core")
 include(":library:ui")
-//include(":sample")
 include(":sample:composeApp")
