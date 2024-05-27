@@ -2,7 +2,7 @@
 # Kotlin
 kotlin = "1.9.24"
 kotlin-coroutines = "1.8.1"
-kotlin-jvm-target = "1.8"
+kotlin-jvm-target = "17"
 
 # Compose
 compose = "1.6.7"
@@ -14,7 +14,7 @@ android-gradle-plugin = "8.3.2"
 android-app-compat = "1.6.1"
 android-core-ktx = "1.13.1"
 android-activity-compose = "1.9.0"
-android-lifecycle-runtime-ktx = "2.8.0"
+androidx_lifecycle = "2.8.0"
 android-test-runner = "1.5.2"
 android-espresso = "3.5.1"
 
@@ -40,8 +40,10 @@ android-build-tools = { module = "com.android.tools.build:gradle", version.ref =
 android-app-compat = { group = "androidx.appcompat", name = "appcompat", version.ref = "android-app-compat" }
 android-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "android-core-ktx" }
 android-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "android-activity-compose" }
-android-lifecycle-runtime-ktx = { module = "androidx.lifecycle:lifecycle-runtime-ktx", version.ref = "android-lifecycle-runtime-ktx" }
 android-compose-preview = { module = "androidx.compose.ui:ui-tooling-preview", version.ref = "compose" }
+android-lifecycle-runtime = { module = "androidx.lifecycle:lifecycle-runtime", version.ref = "androidx_lifecycle" }
+android-lifecycle-view-model = { module = "androidx.lifecycle:lifecycle-viewmodel", version.ref = "androidx_lifecycle" }
+android-lifecycle-view-model-compose = { module = "androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "androidx_lifecycle" }
 
 # Publish
 maven-publish-plugin = { module = "com.vanniktech.maven.publish.base:com.vanniktech.maven.publish.base.gradle.plugin", version.ref = "maven-publish" }
@@ -82,3 +84,4 @@ maven-publish = { id = "com.vanniktech.maven.publish", version.ref = "maven-publ
 
 # Convention
 publish = { id = "com.mr0xf00.easycrop.publish" }
+multiplatform = { id = "com.mr0xf00.easycrop.multiplatform" }

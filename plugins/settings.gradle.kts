@@ -22,3 +22,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "plugins"
 include(":publishing")
+include(":multiplatform")
