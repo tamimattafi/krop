@@ -5,18 +5,18 @@ kotlin-coroutines = "1.8.1"
 kotlin-jvm-target = "17"
 
 # Compose
-compose = "1.6.7"
-compose_plugin = "1.6.10"
+compose = "1.7.0"
+compose_plugin = "1.6.11"
 compose_compiler = "1.5.14"
 
 # Android
 android-gradle-plugin = "8.3.2"
-android-app-compat = "1.6.1"
+android-app-compat = "1.7.0"
 android-core-ktx = "1.13.1"
-android-activity-compose = "1.9.0"
-androidx_lifecycle = "2.8.0"
-android-test-runner = "1.5.2"
-android-espresso = "3.5.1"
+android-activity-compose = "1.9.2"
+androidx_lifecycle = "2.8.5"
+android-test-runner = "1.6.2"
+android-espresso = "3.6.1"
 
 
 # Docs
@@ -27,8 +27,8 @@ maven-publish = "0.28.0"
 
 # Testing
 junit = "4.13.2"
-androidx-test-ext-junit = "1.1.5"
-espresso-core = "3.5.1"
+androidx-test-ext-junit = "1.2.1"
+espresso-core = "3.6.1"
 
 [libraries]
 # Kotlin
