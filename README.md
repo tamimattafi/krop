@@ -1,29 +1,30 @@
+# Krop for Compose Multiplatform
 [![Krop Release](https://img.shields.io/github/release/tamimattafi/krop.svg?style=for-the-badge&color=darkgreen)](https://github.com/tamimattafi/krop/releases)
 [![Kotlin](https://img.shields.io/github/languages/top/tamimattafi/krop.svg?style=for-the-badge&color=blueviolet)](https://kotlinlang.org/)
 [![License Apache 2.0](https://img.shields.io/github/license/tamimattafi/krop.svg?style=for-the-badge&color=purple)](https://github.com/tamimattafi/krop/blob/main/LICENSE)
 
-# Krop for Compose Multiplatform
 Easy to use image cropping library for Compose Multiplatform, with support for shapes, aspect-ratios, transformations, large images, auto zoom...
 
 ## Getting Started
 
 #### 1. Add Dependencies
+Version: 
+[![Krop Release](https://img.shields.io/github/release/tamimattafi/krop.svg?style=for-the-badge&color=darkgreen)](https://github.com/tamimattafi/krop/releases)
 
-Version: [![Krop Release](https://img.shields.io/github/release/tamimattafi/krop.svg?style=for-the-badge&color=darkgreen)](https://github.com/tamimattafi/krop/releases)
-
-Add the `ui` module to use the crop dialog out of the box
+Add the `ui` module to use the crop dialog out of the box:
 ```kotlin
 dependencies {
     implementation("com.attafitamim.krop:ui:$version")
 }
 ```
 
-If you are looking for a custom design, use the `core` module instead, it has all the logic you need
+If you are looking for a custom design, use the `core` module instead:
 ```kotlin
 dependencies {
     implementation("com.attafitamim.krop:core:$version")
 }
 ```
+For hints on how to use `core` logic for a custom design, check sources of the `ui` module.
 
 #### 2. Create an `ImageCropper` instance
 #### ***Option 1 : inside the composition***
