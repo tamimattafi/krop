@@ -18,7 +18,7 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "EasyCrop"
+rootProject.name = "Krop"
 include(":library:core")
 include(":library:ui")
 include(":sample:composeApp")

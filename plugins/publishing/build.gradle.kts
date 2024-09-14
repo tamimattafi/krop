@@ -14,8 +14,8 @@ java {
 
 gradlePlugin {
     plugins.create("publish") {
-        id = "com.mr0xf00.easycrop.publish"
-        implementationClass = "com.mr0xf00.easycrop.publish.PublishConventions"
+        id = "com.attafitamim.krop.publish"
+        implementationClass = "com.attafitamim.krop.publish.PublishConventions"
     }
 }
 
