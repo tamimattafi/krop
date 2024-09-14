@@ -1,24 +1,32 @@
-# EasyCrop for Jetpack Compose
+# Krop for Compose Multiplatform
+[![Krop Release](https://img.shields.io/github/release/tamimattafi/krop.svg?style=for-the-badge&color=darkgreen)](https://github.com/tamimattafi/krop/releases)
+[![Kotlin](https://img.shields.io/github/languages/top/tamimattafi/krop.svg?style=for-the-badge&color=blueviolet)](https://kotlinlang.org/)
+[![License Apache 2.0](https://img.shields.io/github/license/tamimattafi/krop.svg?style=for-the-badge&color=purple)](https://github.com/tamimattafi/krop/blob/main/LICENSE)
 
-<p align="center">
-<img src="https://img.shields.io/maven-central/v/io.github.mr0xf00/easycrop">
-</p>
-<p align="center">Easy to use image cropping library for Jetpack compose, with support for shapes, aspect-ratios, transformations, large images, auto zoom ...</p>
-<p align="center">
-<img src="images/preview.gif"/>
-</p>
+Easy to use image cropping library for Compose Multiplatform, with support for shapes, aspect-ratios, transformations, large images, auto zoom...
 
 ## Getting Started
 
-#### 1. Download
+#### 1. Add Dependencies
+Version: 
 
-Add a dependency on the library to your Android project (Desktop not supported for now)
+[![Krop Release](https://img.shields.io/github/release/tamimattafi/krop.svg?style=for-the-badge&color=darkgreen)](https://github.com/tamimattafi/krop/releases)
 
+**Option 1:** Add the `ui` module to use the crop dialog out of the box:
 ```kotlin
-dependencies {
-    implementation("io.github.mr0xf00:easycrop:0.1.1")
+commonMain.dependencies {
+    implementation("com.attafitamim.krop:ui:$version")
 }
 ```
+
+**Option 2:** If you are looking for a custom design, use the `core` module instead:
+```kotlin
+commonMain.dependencies {
+    implementation("com.attafitamim.krop:core:$version")
+}
+```
+For hints on how to use `core` logic for a custom design, check sources of the `ui` module.
+
 #### 2. Create an `ImageCropper` instance
 #### ***Option 1 : inside the composition***
 ```kotlin

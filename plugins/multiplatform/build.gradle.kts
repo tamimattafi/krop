@@ -14,8 +14,8 @@ java {
 
 gradlePlugin {
     plugins.create("multiplatform") {
-        id = "com.mr0xf00.easycrop.multiplatform"
-        implementationClass = "com.mr0xf00.easycrop.multiplatform.MultiplatformConventions"
+        id = "com.attafitamim.krop.multiplatform"
+        implementationClass = "com.attafitamim.krop.multiplatform.MultiplatformConventions"
     }
 }
 

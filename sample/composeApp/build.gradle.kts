@@ -53,7 +53,7 @@ kotlin {
 }
 
 android {
-    namespace = "com.mr0xf00.easycrop"
+    namespace = "com.attafitamim.krop"
     compileSdk = 34
 
     sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
@@ -61,7 +61,7 @@ android {
     sourceSets["main"].resources.srcDirs("src/commonMain/resources")
 
     defaultConfig {
-        applicationId = "com.mr0xf00.easycrop"
+        applicationId = "com.attafitamim.krop"
         minSdk = 21
         targetSdk = 34
         versionCode = 1
