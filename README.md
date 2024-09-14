@@ -9,18 +9,19 @@ Easy to use image cropping library for Compose Multiplatform, with support for s
 
 #### 1. Add Dependencies
 Version: 
+
 [![Krop Release](https://img.shields.io/github/release/tamimattafi/krop.svg?style=for-the-badge&color=darkgreen)](https://github.com/tamimattafi/krop/releases)
 
-Add the `ui` module to use the crop dialog out of the box:
+**Option 1:** Add the `ui` module to use the crop dialog out of the box:
 ```kotlin
-dependencies {
+commonMain.dependencies {
     implementation("com.attafitamim.krop:ui:$version")
 }
 ```
 
-If you are looking for a custom design, use the `core` module instead:
+**Option 2:** If you are looking for a custom design, use the `core` module instead:
 ```kotlin
-dependencies {
+commonMain.dependencies {
     implementation("com.attafitamim.krop:core:$version")
 }
 ```
