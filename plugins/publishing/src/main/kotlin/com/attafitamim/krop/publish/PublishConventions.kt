@@ -23,7 +23,10 @@ class PublishConventions : Plugin<Project> {
     mavenPublishing.apply {
       coordinates(group, artifact, version)
       pom(MavenPom::configure)
-      publishToMavenCentral(com.vanniktech.maven.publish.SonatypeHost.S01)
+      publishToMavenCentral(
+        com.vanniktech.maven.publish.SonatypeHost.CENTRAL_PORTAL,
+        automaticRelease = true
+      )
       signAllPublications()
     }
   }
