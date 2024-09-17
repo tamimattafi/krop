@@ -71,11 +71,11 @@ val imagePicker = rememberImagePicker(onImage = { uri ->
 
 ### Customization 
 To customize the ui of the image cropper you can provide a different implementation of `CropperStyle` to the cropper dialog.
-You can also use the `CropperStyle` factory function. example :
+You can also use the `cropperStyle` factory function. example :
 ```kotlin
 ImageCropperDialog(
     state = cropState,
-    style = CropperStyle(
+    style = cropperStyle(
         overlay = Color.Red.copy(alpha = .5f),
         autoZoom = false,
         guidelines = null,
