@@ -1,12 +1,11 @@
 [versions]
 # Kotlin
-kotlin = "1.9.24"
+kotlin = "2.0.20"
 kotlin-coroutines = "1.8.1"
 kotlin-jvm-target = "17"
 
 # Compose
 compose_plugin = "1.6.11"
-compose_compiler = "1.5.14"
 
 # Android
 android-gradle-plugin = "8.3.2"
@@ -48,6 +47,7 @@ kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 
 # Compose
 compose = { id = "org.jetbrains.compose", version.ref = "compose_plugin" }
+compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 
 # Android
 android-application = { id = "com.android.application", version.ref = "android-gradle-plugin" }
