@@ -27,6 +27,7 @@ import com.attafitamim.krop.core.crop.asMatrix
 import com.attafitamim.krop.core.crop.cropperTouch
 import com.attafitamim.krop.core.images.rememberLoadedImage
 import com.attafitamim.krop.core.utils.ViewMat
+import com.attafitamim.krop.core.utils.setAspect
 import com.attafitamim.krop.core.utils.times
 import com.attafitamim.krop.core.utils.viewMat
 import kotlinx.coroutines.delay
@@ -45,6 +46,11 @@ fun CropperPreview(
     val viewPadding = LocalDensity.current.run { style.touchRad.toPx() }
     val totalMat = remember(viewMat.matrix, imgMat) { imgMat * viewMat.matrix }
     val image = rememberLoadedImage(state.src, view, totalMat)
+
+    style.forceAspectRatio?.let {
+        state.region = state.region.setAspect(it)
+    }
+
     val cropRect = remember(state.region, viewMat.matrix) {
         viewMat.matrix.map(state.region)
     }

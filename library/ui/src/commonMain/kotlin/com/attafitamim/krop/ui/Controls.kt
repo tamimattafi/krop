@@ -80,20 +80,24 @@ fun CropperControls(
             IconButton(onClick = { state.flipVertical() }) {
                 Icon(painterResource(Res.drawable.flip_ver), null)
             }
-            Box {
-                var menu by remember { mutableStateOf(false) }
-                IconButton(onClick = { menu = !menu }) {
-                    Icon(painterResource(Res.drawable.resize), null)
-                }
-                if (menu) AspectSelectionMenu(
-                    onDismiss = { menu = false },
-                    region = state.region,
-                    onRegion = { state.region = it },
-                    lock = state.aspectLock,
-                    onLock = { state.aspectLock = it }
-                )
-            }
 
+            LocalCropperStyle.current.forceAspectRatio?.let {
+                state.aspectLock = true
+            } ?: run {
+                Box {
+                    var menu by remember { mutableStateOf(false) }
+                    IconButton(onClick = { menu = !menu }) {
+                        Icon(painterResource(Res.drawable.resize), null)
+                    }
+                    if (menu) AspectSelectionMenu(
+                        onDismiss = { menu = false },
+                        region = state.region,
+                        onRegion = { state.region = it },
+                        lock = state.aspectLock,
+                        onLock = { state.aspectLock = it }
+                    )
+                }
+            }
             LocalCropperStyle.current.forceShape?.let {
                 state.shape = it
             } ?: run {
