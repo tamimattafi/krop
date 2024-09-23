@@ -89,6 +89,8 @@ fun BoxScope.DefaultControls(state: CropState) {
 
 @Composable
 fun DefaultTopBar(state: CropState) {
+    val style = LocalCropperStyle.current
+
     TopAppBar(title = {},
         navigationIcon = {
             IconButton(onClick = { state.done(accept = false) }) {
@@ -96,7 +98,7 @@ fun DefaultTopBar(state: CropState) {
             }
         },
         actions = {
-            IconButton(onClick = { state.reset() }) {
+            IconButton(onClick = { state.reset(style.forceShape) }) {
                 Icon(painterResource(Res.drawable.restore), null)
             }
             IconButton(onClick = { state.done(accept = true) }, enabled = !state.accepted) {

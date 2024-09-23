@@ -32,7 +32,7 @@ interface CropState {
     var shape: CropShape
     val accepted: Boolean
     fun done(accept: Boolean)
-    fun reset()
+    fun reset(forceShape: CropShape?)
 }
 
 fun cropState(
@@ -74,9 +74,9 @@ fun cropState(
         _region = new.asMatrix(src.size).map(unTransform.map(region))
     }
 
-    override fun reset() {
+    override fun reset(forceShape: CropShape?) {
         transform = defaultTransform
-        shape = defaultShape
+        shape = forceShape ?: defaultShape
         _region = defaultRegion
         aspectLock = defaultAspectLock
     }
