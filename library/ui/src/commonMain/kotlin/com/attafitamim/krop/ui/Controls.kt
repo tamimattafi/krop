@@ -93,18 +93,23 @@ fun CropperControls(
                     onLock = { state.aspectLock = it }
                 )
             }
-            LocalCropperStyle.current.shapes?.let { shapes ->
-                Box {
-                    var menu by remember { mutableStateOf(false) }
-                    IconButton(onClick = { menu = !menu }) {
-                        Icon(Icons.Default.Star, null)
+
+            LocalCropperStyle.current.forceShape?.let {
+                state.shape = it
+            } ?: run {
+                LocalCropperStyle.current.shapes?.let { shapes ->
+                    Box {
+                        var menu by remember { mutableStateOf(false) }
+                        IconButton(onClick = { menu = !menu }) {
+                            Icon(Icons.Default.Star, null)
+                        }
+                        if (menu) ShapeSelectionMenu(
+                            onDismiss = { menu = false },
+                            selected = state.shape,
+                            onSelect = { state.shape = it },
+                            shapes = shapes
+                        )
                     }
-                    if (menu) ShapeSelectionMenu(
-                        onDismiss = { menu = false },
-                        selected = state.shape,
-                        onSelect = { state.shape = it },
-                        shapes = shapes
-                    )
                 }
             }
         }

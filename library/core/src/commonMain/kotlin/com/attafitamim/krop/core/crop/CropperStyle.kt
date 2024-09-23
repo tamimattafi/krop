@@ -47,6 +47,9 @@ interface CropperStyle {
     /** All available crop shapes */
     val shapes: List<CropShape>?
 
+    /** Force a crop shape, list of shapes will be ignored */
+    val forceShape: CropShape?
+
     /** All available aspect ratios */
     val aspects: List<AspectRatio>
 
@@ -87,6 +90,7 @@ fun cropperStyle(
     secondaryHandles: Boolean = true,
     overlay: Color = Color.Black.copy(alpha = .5f),
     shapes: List<CropShape>? = DefaultCropShapes,
+    forceShape: CropShape? = null,
     aspects: List<AspectRatio> = DefaultAspectRatios,
     autoZoom: Boolean = true,
 ): CropperStyle = object : CropperStyle {
@@ -94,6 +98,7 @@ fun cropperStyle(
     override val backgroundColor: Color get() = backgroundColor
     override val overlayColor: Color get() = overlay
     override val shapes: List<CropShape>? get() = shapes?.takeIf { it.isNotEmpty() }
+    override val forceShape: CropShape? get() = forceShape
     override val aspects get() = aspects
     override val autoZoom: Boolean get() = autoZoom
 
