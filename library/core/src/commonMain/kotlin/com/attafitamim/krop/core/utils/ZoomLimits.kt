@@ -14,9 +14,9 @@ class ZoomLimits(
         val imageAspectRatio = originalImageSize.width.toFloat() / originalImageSize.height
 
         val fullImageSize = if (viewAspectRatio > imageAspectRatio) {
-            originalImageSize.height
+            originalImageSize.height.coerceAtLeast(view.height)
         } else {
-            originalImageSize.width
+            originalImageSize.width.coerceAtLeast(view.width)
         }.toFloat()
 
         maxFactor = fullImageSize / minCropSize
