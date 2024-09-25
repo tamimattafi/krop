@@ -13,6 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.geometry.toRect
 import androidx.compose.ui.graphics.ClipOp
+import androidx.compose.ui.graphics.Matrix
 import androidx.compose.ui.graphics.drawscope.clipPath
 import androidx.compose.ui.graphics.drawscope.withTransform
 import androidx.compose.ui.layout.onGloballyPositioned
@@ -21,6 +22,7 @@ import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.toSize
 import com.attafitamim.krop.core.crop.CropState
 import com.attafitamim.krop.core.crop.DragHandle
+import com.attafitamim.krop.core.crop.ImgTransform
 import com.attafitamim.krop.core.crop.LocalCropperStyle
 import com.attafitamim.krop.core.crop.animateImgTransform
 import com.attafitamim.krop.core.crop.asMatrix
@@ -28,6 +30,7 @@ import com.attafitamim.krop.core.crop.cropperTouch
 import com.attafitamim.krop.core.images.rememberLoadedImage
 import com.attafitamim.krop.core.utils.ViewMat
 import com.attafitamim.krop.core.utils.ZoomLimits
+import com.attafitamim.krop.core.utils.applyTransformation
 import com.attafitamim.krop.core.utils.times
 import com.attafitamim.krop.core.utils.viewMat
 import kotlinx.coroutines.delay
@@ -57,8 +60,10 @@ fun CropperPreview(
     BringToView(
         enabled = style.autoZoom,
         hasOverride = pendingDrag != null,
+        zooming = zooming.value,
         outer = view.toSize().toRect().deflate(viewPadding),
         mat = viewMat, local = state.region,
+        defaultRegion = state.defaultRegion,
         transform = state.transform,
     )
     Canvas(
@@ -97,9 +102,11 @@ fun CropperPreview(
 fun BringToView(
     enabled: Boolean,
     hasOverride: Boolean,
+    zooming: Boolean,
     outer: Rect,
     mat: ViewMat,
-    local: Rect
+    local: Rect,
+    defaultRegion: Rect,
     transform: ImgTransform,
 ) {
     if (outer.isEmpty) return
@@ -109,11 +116,25 @@ fun BringToView(
     }
     if (!enabled) return
     var overrideBlock by remember { mutableStateOf(false) }
+    var pendingAutoZoom by remember { mutableStateOf(true) }
+
+    if (zooming) {
+        // avoid annoying snap when user has started zooming immediately after crop window change
+        pendingAutoZoom = false
+    }
+
+    LaunchedEffect(local, outer) {
+        pendingAutoZoom = true // adjusting crop window / resetting crop / device rotation
+    }
+
     LaunchedEffect(outer, transform) { // device rotation
         mat.setOriginalScale(defaultRegion.applyTransformation(transform), outer)
     }
-    LaunchedEffect(hasOverride, outer, local) {
 
+    LaunchedEffect(zooming, hasOverride, outer, local) autoZoom@{
+        if (zooming || !pendingAutoZoom) {
+            return@autoZoom
+        }
         if (hasOverride) overrideBlock = true
         else {
             if (overrideBlock) {
@@ -121,6 +142,7 @@ fun BringToView(
             }
             mat.fit(mat.matrix.map(local), outer)
             overrideBlock = false
+            pendingAutoZoom = false
         }
     }
 }
