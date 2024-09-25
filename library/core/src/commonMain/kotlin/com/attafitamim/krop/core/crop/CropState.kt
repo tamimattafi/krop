@@ -28,6 +28,7 @@ interface CropState {
     val src: ImageSrc
     var transform: ImgTransform
     var region: Rect
+    val defaultRegion: Rect
     var aspectLock: Boolean
     var shape: CropShape
     val accepted: Boolean
@@ -51,7 +52,7 @@ fun cropState(
             _transform = value
         }
 
-    val defaultRegion = src.size.toSize().toRect()
+    override val defaultRegion = src.size.toSize().toRect()
 
     private var _region by mutableStateOf(defaultRegion)
     override var region
