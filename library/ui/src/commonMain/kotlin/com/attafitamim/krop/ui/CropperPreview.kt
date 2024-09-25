@@ -71,6 +71,7 @@ fun CropperPreview(
                 viewMat = viewMat,
                 pending = pendingDrag,
                 onPending = { pendingDrag = it },
+                zoomLimits = zoomLimits,
             )
     ) {
         withTransform({ transform(totalMat) }) {

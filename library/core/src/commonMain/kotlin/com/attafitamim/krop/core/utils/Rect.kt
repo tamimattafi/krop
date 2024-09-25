@@ -88,15 +88,17 @@ fun IntRect.constrainOffset(bounds: IntRect): IntRect {
 fun Rect.resize(
     handle: Offset,
     delta: Offset,
+    maxZoomSize: Int,
 ): Rect {
     var (l, t, r, b) = this
     val (dx, dy) = delta
-    if (handle.y == 1f) b += dy
-    else if (handle.y == 0f) t += dy
-    if (handle.x == 1f) r += dx
-    else if (handle.x == 0f) l += dx
-    if (l > r) l = r.also { r = l }
-    if (t > b) t = b.also { b = t }
+
+    if (handle.y == 1f) b = (b + dy).coerceAtLeast(t + maxZoomSize)
+    else if (handle.y == 0f) t = (t + dy).coerceAtMost(b - maxZoomSize)
+
+    if (handle.x == 1f) r = (r + dx).coerceAtLeast(l + maxZoomSize)
+    else if (handle.x == 0f) l = (l + dx).coerceAtMost(r - maxZoomSize)
+
     return Rect(l, t, r, b)
 }
 
