@@ -109,9 +109,9 @@ fun BringToView(
         else {
             if (overrideBlock) {
                 delay(500)
-                overrideBlock = false
             }
             mat.fit(mat.matrix.map(local), outer)
+            overrideBlock = false
         }
     }
 }
