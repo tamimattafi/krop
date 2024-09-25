@@ -15,7 +15,7 @@ import kotlin.math.min
 @Stable
 interface ViewMat {
     fun zoomStart(center: Offset)
-    fun zoom(center: Offset, scale: Float)
+    fun zoom(center: Offset, scale: Float, zoomLimits: ZoomLimits)
     suspend fun fit(inner: Rect, outer: Rect)
     fun setOriginalScale(defaultRegion: Rect, outer: Rect)
     fun snapFit(inner: Rect, outer: Rect)
@@ -42,11 +42,21 @@ fun viewMat() = object : ViewMat {
         c0 = center
     }
 
-    override fun zoom(center: Offset, scale: Float) {
+    override fun zoom(center: Offset, scale: Float, zoomLimits: ZoomLimits) {
         val s = Matrix().apply {
             translate(center.x - c0.x, center.y - c0.y)
             translate(center.x, center.y)
-            scale(scale, scale)
+
+            val currentScale = mat.values[Matrix.ScaleX]
+            val desiredNextScale = currentScale * scale
+
+            val allowedScale = when {
+                desiredNextScale > zoomLimits.maxFactor -> (zoomLimits.maxFactor / currentScale).coerceAtMost(1f)
+                desiredNextScale < originalScale -> (originalScale / currentScale).coerceAtLeast(1f)
+                else -> scale
+            }
+            scale(allowedScale, allowedScale)
+
             translate(-center.x, -center.y)
         }
         update { it *= s }

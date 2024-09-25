@@ -43,6 +43,7 @@ fun CropperPreview(
     val viewMat = remember { viewMat() }
     var view by remember { mutableStateOf(IntSize.Zero) }
     var pendingDrag by remember { mutableStateOf<DragHandle?>(null) }
+    val zooming = remember { mutableStateOf(false) }
     val viewPadding = LocalDensity.current.run { style.touchRad.toPx() }
     val totalMat = remember(viewMat.matrix, imgMat) { imgMat * viewMat.matrix }
     val image = rememberLoadedImage(state.src, view, totalMat)
@@ -71,6 +72,7 @@ fun CropperPreview(
                 viewMat = viewMat,
                 pending = pendingDrag,
                 onPending = { pendingDrag = it },
+                zooming = zooming,
                 zoomLimits = zoomLimits,
             )
     ) {

@@ -35,6 +35,7 @@ fun Modifier.cropperTouch(
     viewMat: ViewMat,
     pending: DragHandle?,
     onPending: (DragHandle?) -> Unit,
+    zooming: MutableState<Boolean>,
     zoomLimits: ZoomLimits,
 ): Modifier = composed {
     val touchRadPx2 = LocalDensity.current.run {
@@ -44,8 +45,12 @@ fun Modifier.cropperTouch(
     onGestures(
         rememberGestureState(
             zoom = zoomState(
-                begin = { c -> viewMat.zoomStart(c) },
-                next = { s, c -> viewMat.zoom(c, s) },
+                begin = { c ->
+                    viewMat.zoomStart(c)
+                    zooming.value = true
+                },
+                next = { s, c -> viewMat.zoom(c, s, zoomLimits) },
+                done = { zooming.value = false }
             ),
             drag = dragState(
                 begin = { pos ->
