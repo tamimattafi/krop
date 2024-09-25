@@ -27,6 +27,7 @@ import com.attafitamim.krop.core.crop.asMatrix
 import com.attafitamim.krop.core.crop.cropperTouch
 import com.attafitamim.krop.core.images.rememberLoadedImage
 import com.attafitamim.krop.core.utils.ViewMat
+import com.attafitamim.krop.core.utils.ZoomLimits
 import com.attafitamim.krop.core.utils.times
 import com.attafitamim.krop.core.utils.viewMat
 import kotlinx.coroutines.delay
@@ -49,6 +50,9 @@ fun CropperPreview(
         viewMat.matrix.map(state.region)
     }
     val cropPath = remember(state.shape, cropRect) { state.shape.asPath(cropRect) }
+    val zoomLimits = remember(state.src.size, view) {
+        ZoomLimits(state.src.size, view)
+    }
     BringToView(
         enabled = style.autoZoom,
         hasOverride = pendingDrag != null,
