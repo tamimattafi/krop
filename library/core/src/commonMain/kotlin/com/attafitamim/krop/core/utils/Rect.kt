@@ -7,6 +7,7 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.IntRect
 import androidx.compose.ui.unit.IntSize
 import com.attafitamim.krop.core.crop.AspectRatio
+import com.attafitamim.krop.core.crop.ImgTransform
 import kotlin.math.absoluteValue
 import kotlin.math.ceil
 import kotlin.math.floor
@@ -167,3 +168,11 @@ fun Rect.align(alignment: Int): Rect = Rect(
     left.alignDown(alignment), top.alignDown(alignment),
     right.alignUp(alignment), bottom.alignUp(alignment)
 )
+
+fun Rect.applyTransformation(transform: ImgTransform): Rect {
+    return if ((transform.angleDeg + 360) % 360 in listOf(90, 270)) {
+        Rect(this.top, this.left, this.bottom, this.right)
+    } else {
+        this
+    }
+}

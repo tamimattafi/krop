@@ -58,6 +58,7 @@ fun CropperPreview(
         hasOverride = pendingDrag != null,
         outer = view.toSize().toRect().deflate(viewPadding),
         mat = viewMat, local = state.region,
+        transform = state.transform,
     )
     Canvas(
         modifier = modifier
@@ -96,6 +97,7 @@ fun BringToView(
     outer: Rect,
     mat: ViewMat,
     local: Rect
+    transform: ImgTransform,
 ) {
     if (outer.isEmpty) return
     DisposableEffect(Unit) {
@@ -104,7 +106,11 @@ fun BringToView(
     }
     if (!enabled) return
     var overrideBlock by remember { mutableStateOf(false) }
+    LaunchedEffect(outer, transform) { // device rotation
+        mat.setOriginalScale(defaultRegion.applyTransformation(transform), outer)
+    }
     LaunchedEffect(hasOverride, outer, local) {
+
         if (hasOverride) overrideBlock = true
         else {
             if (overrideBlock) {

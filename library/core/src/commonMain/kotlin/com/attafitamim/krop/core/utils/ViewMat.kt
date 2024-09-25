@@ -17,6 +17,7 @@ interface ViewMat {
     fun zoomStart(center: Offset)
     fun zoom(center: Offset, scale: Float)
     suspend fun fit(inner: Rect, outer: Rect)
+    fun setOriginalScale(defaultRegion: Rect, outer: Rect)
     fun snapFit(inner: Rect, outer: Rect)
     val matrix: Matrix
     val invMatrix: Matrix
@@ -24,6 +25,7 @@ interface ViewMat {
 }
 
 fun viewMat() = object : ViewMat {
+    private var originalScale: Float = 1f
     var c0 = Offset.Zero
     var mat by mutableStateOf(Matrix(), neverEqualPolicy())
     val inv by derivedStateOf {
@@ -75,6 +77,12 @@ fun viewMat() = object : ViewMat {
     override fun snapFit(inner: Rect, outer: Rect) {
         val dst = getDst(inner, outer) ?: return
         update { it *= Matrix().apply { setRectToRect(inner, dst) } }
+    }
+
+    override fun setOriginalScale(defaultRegion: Rect, outer: Rect) {
+        val dst = getDst(defaultRegion, outer) ?: return
+        val matrix = Matrix().apply { setRectToRect(defaultRegion, dst) }
+        originalScale = matrix.values[Matrix.ScaleX]
     }
 
     private fun getDst(inner: Rect, outer: Rect): Rect? {
