@@ -1,9 +1,9 @@
 package com.attafitamim.krop.core.utils
 
+import androidx.compose.foundation.gestures.awaitEachGesture
 import androidx.compose.foundation.gestures.awaitFirstDown
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.gestures.detectTransformGestures
-import androidx.compose.foundation.gestures.forEachGesture
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberUpdatedState
@@ -136,8 +136,7 @@ fun Modifier.onGestures(state: GestureState): Modifier {
                 }
             }
             launch {
-                forEachGesture {
-                    awaitPointerEventScope {
+                awaitEachGesture {
                         info = GestureData()
                         val first = awaitFirstDown(requireUnconsumed = false)
                         info.dragId = first.id
@@ -167,7 +166,6 @@ fun Modifier.onGestures(state: GestureState): Modifier {
                         if (info.isDrag) state.drag.onDone()
                         if (info.isZoom) state.zoom.onDone()
                     }
-                }
             }
         }
     }
