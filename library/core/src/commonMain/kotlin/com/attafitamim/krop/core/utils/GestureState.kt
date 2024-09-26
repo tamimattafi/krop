@@ -103,16 +103,15 @@ private data class GestureData(
 
 
 fun Modifier.onGestures(state: GestureState): Modifier {
+    var info = GestureData()
     return pointerInput(Unit) {
         coroutineScope {
-            var info = GestureData()
             launch {
-                detectTapGestures(
+                detectTapGestures( // Note: currently unused
                     onLongPress = { state.tap.onLongPress(it.x, it.y, info.maxPointers) },
                     onTap = { state.tap.onTap(it.x, it.y, info.maxPointers) },
                 )
             }
-            launch {
                 detectTransformGestures(panZoomLock = true) { c, _, zoom, _ ->
                     if (!(info.isDrag || info.isZoom)) {
                         if (info.pointers == 1) {
@@ -135,8 +134,8 @@ fun Modifier.onGestures(state: GestureState): Modifier {
                     }
                 }
             }
-            launch {
-                awaitEachGesture {
+    }.pointerInput(Unit) {
+                    awaitEachGesture {
                         info = GestureData()
                         val first = awaitFirstDown(requireUnconsumed = false)
                         info.dragId = first.id
@@ -165,8 +164,6 @@ fun Modifier.onGestures(state: GestureState): Modifier {
                         }
                         if (info.isDrag) state.drag.onDone()
                         if (info.isZoom) state.zoom.onDone()
-                    }
-            }
         }
     }
 }
