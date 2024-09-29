@@ -1,7 +1,7 @@
 [versions]
 # Kotlin
 kotlin = "2.0.20"
-kotlin-coroutines = "1.8.1"
+kotlin-coroutines = "1.9.0"
 kotlin-jvm-target = "17"
 
 # Compose
