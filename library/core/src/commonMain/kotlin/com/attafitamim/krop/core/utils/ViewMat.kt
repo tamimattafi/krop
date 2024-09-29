@@ -15,8 +15,9 @@ import kotlin.math.min
 @Stable
 interface ViewMat {
     fun zoomStart(center: Offset)
-    fun zoom(center: Offset, scale: Float)
+    fun zoom(center: Offset, scale: Float, zoomLimits: ZoomLimits)
     suspend fun fit(inner: Rect, outer: Rect)
+    fun setOriginalScale(defaultRegion: Rect, outer: Rect)
     fun snapFit(inner: Rect, outer: Rect)
     val matrix: Matrix
     val invMatrix: Matrix
@@ -24,6 +25,7 @@ interface ViewMat {
 }
 
 fun viewMat() = object : ViewMat {
+    private var originalScale: Float = 1f
     var c0 = Offset.Zero
     var mat by mutableStateOf(Matrix(), neverEqualPolicy())
     val inv by derivedStateOf {
@@ -40,11 +42,21 @@ fun viewMat() = object : ViewMat {
         c0 = center
     }
 
-    override fun zoom(center: Offset, scale: Float) {
+    override fun zoom(center: Offset, scale: Float, zoomLimits: ZoomLimits) {
         val s = Matrix().apply {
             translate(center.x - c0.x, center.y - c0.y)
             translate(center.x, center.y)
-            scale(scale, scale)
+
+            val currentScale = mat.values[Matrix.ScaleX]
+            val desiredNextScale = currentScale * scale
+
+            val allowedScale = when {
+                desiredNextScale > zoomLimits.maxFactor -> (zoomLimits.maxFactor / currentScale).coerceAtMost(1f)
+                desiredNextScale < originalScale -> (originalScale / currentScale).coerceAtLeast(1f)
+                else -> scale
+            }
+            scale(allowedScale, allowedScale)
+
             translate(-center.x, -center.y)
         }
         update { it *= s }
@@ -75,6 +87,12 @@ fun viewMat() = object : ViewMat {
     override fun snapFit(inner: Rect, outer: Rect) {
         val dst = getDst(inner, outer) ?: return
         update { it *= Matrix().apply { setRectToRect(inner, dst) } }
+    }
+
+    override fun setOriginalScale(defaultRegion: Rect, outer: Rect) {
+        val dst = getDst(defaultRegion, outer) ?: return
+        val matrix = Matrix().apply { setRectToRect(defaultRegion, dst) }
+        originalScale = matrix.values[Matrix.ScaleX]
     }
 
     private fun getDst(inner: Rect, outer: Rect): Rect? {

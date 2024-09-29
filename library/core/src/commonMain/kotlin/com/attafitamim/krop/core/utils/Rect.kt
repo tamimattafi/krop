@@ -7,6 +7,7 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.IntRect
 import androidx.compose.ui.unit.IntSize
 import com.attafitamim.krop.core.crop.AspectRatio
+import com.attafitamim.krop.core.crop.ImgTransform
 import kotlin.math.absoluteValue
 import kotlin.math.ceil
 import kotlin.math.floor
@@ -87,15 +88,17 @@ fun IntRect.constrainOffset(bounds: IntRect): IntRect {
 fun Rect.resize(
     handle: Offset,
     delta: Offset,
+    maxZoomSize: Int,
 ): Rect {
     var (l, t, r, b) = this
     val (dx, dy) = delta
-    if (handle.y == 1f) b += dy
-    else if (handle.y == 0f) t += dy
-    if (handle.x == 1f) r += dx
-    else if (handle.x == 0f) l += dx
-    if (l > r) l = r.also { r = l }
-    if (t > b) t = b.also { b = t }
+
+    if (handle.y == 1f) b = (b + dy).coerceAtLeast(t + maxZoomSize)
+    else if (handle.y == 0f) t = (t + dy).coerceAtMost(b - maxZoomSize)
+
+    if (handle.x == 1f) r = (r + dx).coerceAtLeast(l + maxZoomSize)
+    else if (handle.x == 0f) l = (l + dx).coerceAtMost(r - maxZoomSize)
+
     return Rect(l, t, r, b)
 }
 
@@ -167,3 +170,11 @@ fun Rect.align(alignment: Int): Rect = Rect(
     left.alignDown(alignment), top.alignDown(alignment),
     right.alignUp(alignment), bottom.alignUp(alignment)
 )
+
+fun Rect.applyTransformation(transform: ImgTransform): Rect {
+    return if ((transform.angleDeg + 360) % 360 in listOf(90, 270)) {
+        Rect(this.top, this.left, this.bottom, this.right)
+    } else {
+        this
+    }
+}
