@@ -6,6 +6,7 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.IntRect
 import androidx.compose.ui.unit.IntSize
+import androidx.compose.ui.unit.toSize
 import com.attafitamim.krop.core.crop.AspectRatio
 import com.attafitamim.krop.core.crop.ImgTransform
 import kotlin.math.absoluteValue
@@ -29,7 +30,10 @@ fun Size.coerceAtMost(maxSize: Size): Size {
     return Size(width = width * scaleF, height = height * scaleF)
 }
 
-fun Rect.atOrigin(): Rect = Rect(offset = Offset.Zero, size = size)
+fun Rect.atOrigin(maxSize: IntSize?): Rect = Rect(
+    offset = Offset.Zero,
+    size = maxSize?.let { size.coerceAtMost(it.toSize()) } ?: size
+)
 
 val Rect.area get() = width * height
 

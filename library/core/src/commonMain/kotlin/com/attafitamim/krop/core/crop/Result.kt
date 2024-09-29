@@ -40,7 +40,7 @@ suspend fun CropState.doCreateResult(maxSize: IntSize?): ImageBitmap? {
     val imgMat = transform.asMatrix(src.size)
     val totalMat = imgMat * viewMat.matrix
 
-    canvas.clipPath(shape.asPath(region.atOrigin()))
+    canvas.clipPath(shape.asPath(region.atOrigin(maxSize)))
     canvas.concat(totalMat)
     val inParams = getDecodeParams(view = finalSize, img = src.size, totalMat)
         ?: return null
