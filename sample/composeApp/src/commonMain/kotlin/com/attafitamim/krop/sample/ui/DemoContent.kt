@@ -11,8 +11,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.unit.dp
+import com.attafitamim.krop.core.crop.AspectRatio
+import com.attafitamim.krop.core.crop.CircleCropShape
 import com.attafitamim.krop.core.crop.CropState
 import com.attafitamim.krop.core.crop.CropperLoading
+import com.attafitamim.krop.core.crop.RectCropShape
+import com.attafitamim.krop.core.crop.StarCropShape
+import com.attafitamim.krop.core.crop.TriangleCropShape
+import com.attafitamim.krop.core.crop.cropperStyle
 import com.attafitamim.krop.sample.ui.theme.KropTheme
 import com.attafitamim.krop.ui.ImageCropperDialog
 
@@ -26,7 +32,13 @@ fun DemoContent(
 ) {
     if (cropState != null) {
         KropTheme(darkTheme = true) {
-            ImageCropperDialog(state = cropState)
+            ImageCropperDialog(
+                state = cropState,
+                style = cropperStyle(
+                    shapes = listOf(RectCropShape, CircleCropShape, TriangleCropShape, StarCropShape),
+                    aspects = listOf(AspectRatio(16, 9), AspectRatio(1, 1)),
+                )
+            )
         }
     }
     if (cropState == null && loadingStatus != null) {

@@ -45,7 +45,7 @@ interface CropperStyle {
     val touchRad: Dp
 
     /** All available crop shapes */
-    val shapes: List<CropShape>?
+    val shapes: List<CropShape>
 
     /** All available aspect ratios */
     val aspects: List<AspectRatio>
@@ -86,14 +86,14 @@ fun cropperStyle(
     guidelines: CropperStyleGuidelines? = CropperStyleGuidelines(),
     secondaryHandles: Boolean = true,
     overlay: Color = Color.Black.copy(alpha = .5f),
-    shapes: List<CropShape>? = DefaultCropShapes,
+    shapes: List<CropShape> = DefaultCropShapes,
     aspects: List<AspectRatio> = DefaultAspectRatios,
     autoZoom: Boolean = true,
 ): CropperStyle = object : CropperStyle {
     override val touchRad: Dp get() = touchRad
     override val backgroundColor: Color get() = backgroundColor
     override val overlayColor: Color get() = overlay
-    override val shapes: List<CropShape>? get() = shapes?.takeIf { it.isNotEmpty() }
+    override val shapes: List<CropShape> get() = shapes
     override val aspects get() = aspects
     override val autoZoom: Boolean get() = autoZoom
 
