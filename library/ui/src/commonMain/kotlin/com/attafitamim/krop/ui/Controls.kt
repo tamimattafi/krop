@@ -93,7 +93,7 @@ fun CropperControls(
                     onLock = { state.aspectLock = it }
                 )
             }
-            LocalCropperStyle.current.shapes?.let { shapes ->
+            LocalCropperStyle.current.shapes.let { shapes ->
                 Box {
                     var menu by remember { mutableStateOf(false) }
                     IconButton(onClick = { menu = !menu }) {
