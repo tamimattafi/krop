@@ -16,6 +16,7 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Done
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clipToBounds
@@ -50,6 +51,10 @@ fun ImageCropperDialog(
     topBar: @Composable (CropState) -> Unit = { DefaultTopBar(it) },
     cropControls: @Composable BoxScope.(CropState) -> Unit = { DefaultControls(it) }
 ) {
+    LaunchedEffect(Unit) {
+        state.setInitialState(style) // Could be buggy, since it is run in a separate thread
+    }
+
     CompositionLocalProvider(LocalCropperStyle provides style) {
         Dialog(
             onDismissRequest = { state.done(accept = false) },

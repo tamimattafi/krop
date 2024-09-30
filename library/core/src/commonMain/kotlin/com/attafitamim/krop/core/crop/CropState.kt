@@ -19,6 +19,7 @@ import com.attafitamim.krop.core.utils.keepAspect
 import com.attafitamim.krop.core.utils.next90
 import com.attafitamim.krop.core.utils.prev90
 import com.attafitamim.krop.core.utils.scaleToFit
+import com.attafitamim.krop.core.utils.setAspect
 import com.attafitamim.krop.core.utils.setSize
 import com.attafitamim.krop.core.utils.toRect
 
@@ -33,6 +34,7 @@ interface CropState {
     var shape: CropShape
     val accepted: Boolean
     fun done(accept: Boolean)
+    fun setInitialState(style: CropperStyle)
     fun reset()
 }
 
@@ -41,8 +43,8 @@ fun cropState(
     onDone: () -> Unit = {},
 ): CropState = object : CropState {
     val defaultTransform: ImgTransform = ImgTransform.Identity
-    val defaultShape: CropShape = RectCropShape
-    val defaultAspectLock: Boolean = false
+    private var defaultShape: CropShape = RectCropShape
+    private var defaultAspectLock: Boolean = false
     override val src: ImageSrc get() = src
     private var _transform: ImgTransform by mutableStateOf(defaultTransform)
     override var transform: ImgTransform
@@ -53,6 +55,7 @@ fun cropState(
         }
 
     override val defaultRegion = src.size.toSize().toRect()
+    private var firstRegion: Rect = defaultRegion
 
     private var _region by mutableStateOf(defaultRegion)
     override var region
@@ -75,10 +78,29 @@ fun cropState(
         _region = new.asMatrix(src.size).map(unTransform.map(region))
     }
 
+    /**
+     * TODO It would be cleaner to set this state via the constructor of CropState
+     * But then we need to know the CropperStyle in advance
+     */
+    override fun setInitialState(style: CropperStyle) {
+        defaultShape = (style.shapes.firstOrNull() ?: defaultShape).also {
+            shape = it
+        }
+
+        firstRegion = style.aspects.firstOrNull()?.let {
+            this.region.setAspect(it)
+        } ?: defaultRegion
+        _region = firstRegion
+
+        defaultAspectLock = (style.aspects.size == 1).also {
+            aspectLock = it
+        }
+    }
+
     override fun reset() {
         transform = defaultTransform
         shape = defaultShape
-        _region = defaultRegion
+        _region = firstRegion
         aspectLock = defaultAspectLock
     }
 
