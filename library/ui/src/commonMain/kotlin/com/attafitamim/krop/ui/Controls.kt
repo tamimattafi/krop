@@ -80,6 +80,8 @@ fun CropperControls(
             IconButton(onClick = { state.flipVertical() }) {
                 Icon(painterResource(Res.drawable.flip_ver), null)
             }
+            LocalCropperStyle.current.aspects.let { aspects ->
+                if (aspects.size > 1) {
             Box {
                 var menu by remember { mutableStateOf(false) }
                 IconButton(onClick = { menu = !menu }) {
@@ -93,7 +95,10 @@ fun CropperControls(
                     onLock = { state.aspectLock = it }
                 )
             }
+                }
+            }
             LocalCropperStyle.current.shapes.let { shapes ->
+                if (shapes.size > 1) {
                 Box {
                     var menu by remember { mutableStateOf(false) }
                     IconButton(onClick = { menu = !menu }) {
@@ -105,6 +110,7 @@ fun CropperControls(
                         onSelect = { state.shape = it },
                         shapes = shapes
                     )
+                }
                 }
             }
         }
