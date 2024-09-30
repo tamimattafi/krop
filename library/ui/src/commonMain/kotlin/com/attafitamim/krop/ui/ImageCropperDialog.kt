@@ -12,7 +12,7 @@ import androidx.compose.material.IconButton
 import androidx.compose.material.Surface
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Done
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
@@ -92,7 +92,7 @@ fun DefaultTopBar(state: CropState) {
     TopAppBar(title = {},
         navigationIcon = {
             IconButton(onClick = { state.done(accept = false) }) {
-                Icon(Icons.Default.ArrowBack, null)
+                Icon(Icons.AutoMirrored.Filled.ArrowBack, null)
             }
         },
         actions = {
