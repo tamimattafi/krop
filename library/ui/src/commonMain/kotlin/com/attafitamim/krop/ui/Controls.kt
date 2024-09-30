@@ -64,7 +64,7 @@ val LocalVerticalControls = staticCompositionLocalOf { false }
 fun CropperControls(
     isVertical: Boolean,
     state: CropState,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     CompositionLocalProvider(LocalVerticalControls provides isVertical) {
         ButtonsBar(modifier = modifier) {
@@ -82,35 +82,35 @@ fun CropperControls(
             }
             LocalCropperStyle.current.aspects.let { aspects ->
                 if (aspects.size > 1) {
-            Box {
-                var menu by remember { mutableStateOf(false) }
-                IconButton(onClick = { menu = !menu }) {
-                    Icon(painterResource(Res.drawable.resize), null)
-                }
-                if (menu) AspectSelectionMenu(
-                    onDismiss = { menu = false },
-                    region = state.region,
-                    onRegion = { state.region = it },
-                    lock = state.aspectLock,
-                    onLock = { state.aspectLock = it }
-                )
-            }
+                    Box {
+                        var menu by remember { mutableStateOf(false) }
+                        IconButton(onClick = { menu = !menu }) {
+                            Icon(painterResource(Res.drawable.resize), null)
+                        }
+                        if (menu) AspectSelectionMenu(
+                            onDismiss = { menu = false },
+                            region = state.region,
+                            onRegion = { state.region = it },
+                            lock = state.aspectLock,
+                            onLock = { state.aspectLock = it }
+                        )
+                    }
                 }
             }
             LocalCropperStyle.current.shapes.let { shapes ->
                 if (shapes.size > 1) {
-                Box {
-                    var menu by remember { mutableStateOf(false) }
-                    IconButton(onClick = { menu = !menu }) {
-                        Icon(Icons.Default.Star, null)
+                    Box {
+                        var menu by remember { mutableStateOf(false) }
+                        IconButton(onClick = { menu = !menu }) {
+                            Icon(Icons.Default.Star, null)
+                        }
+                        if (menu) ShapeSelectionMenu(
+                            onDismiss = { menu = false },
+                            selected = state.shape,
+                            onSelect = { state.shape = it },
+                            shapes = shapes
+                        )
                     }
-                    if (menu) ShapeSelectionMenu(
-                        onDismiss = { menu = false },
-                        selected = state.shape,
-                        onSelect = { state.shape = it },
-                        shapes = shapes
-                    )
-                }
                 }
             }
         }
@@ -120,7 +120,7 @@ fun CropperControls(
 @Composable
 fun ButtonsBar(
     modifier: Modifier = Modifier,
-    buttons: @Composable () -> Unit
+    buttons: @Composable () -> Unit,
 ) {
     Surface(
         modifier = modifier,
@@ -144,7 +144,6 @@ fun ButtonsBar(
 }
 
 
-
 @Composable
 fun ShapeSelectionMenu(
     onDismiss: () -> Unit,
@@ -163,7 +162,7 @@ fun ShapeSelectionMenu(
 @Composable
 fun ShapeItem(
     shape: CropShape, selected: Boolean, onSelect: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     val color by animateColorAsState(
         targetValue = if (!selected) LocalContentColor.current
@@ -193,7 +192,7 @@ fun AspectSelectionMenu(
     region: Rect,
     onRegion: (Rect) -> Unit,
     lock: Boolean,
-    onLock: (Boolean) -> Unit
+    onLock: (Boolean) -> Unit,
 ) {
     val aspects = LocalCropperStyle.current.aspects
     OptionsPopup(onDismiss = onDismiss, optionCount = 1 + aspects.size) { i ->
