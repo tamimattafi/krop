@@ -17,6 +17,10 @@ kotlin {
             implementation(compose.material)
             implementation(compose.components.resources)
         }
+
+        androidMain.dependencies {
+            implementation(compose.foundation)
+        }
     }
 }
 
