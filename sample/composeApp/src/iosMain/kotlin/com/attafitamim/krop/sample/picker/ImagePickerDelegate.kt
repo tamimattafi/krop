@@ -1,7 +1,7 @@
 package com.attafitamim.krop.sample.picker
 
-import com.attafitamim.krop.core.images.ImageBitmapSrc
 import com.attafitamim.krop.core.images.ImageSrc
+import com.attafitamim.krop.core.utils.UIImageSrc
 import platform.UIKit.UIImage
 import platform.UIKit.UIImagePickerController
 import platform.UIKit.UIImagePickerControllerDelegateProtocol
@@ -18,9 +18,9 @@ class ImagePickerDelegate(
     ) {
         val image = didFinishPickingMediaWithInfo[UIImagePickerControllerEditedImage] as? UIImage
             ?: didFinishPickingMediaWithInfo[UIImagePickerControllerOriginalImage] as? UIImage
+            ?: return
 
-        val imageBitmap = image?.toImageBitmap() ?: return
-        val imageSrc = ImageBitmapSrc(imageBitmap)
+        val imageSrc = UIImageSrc(image)
         picker.dismissViewControllerAnimated(true, null)
         onImage.invoke(imageSrc)
     }
