@@ -13,8 +13,8 @@ import androidx.compose.ui.input.pointer.PointerEvent
 import androidx.compose.ui.input.pointer.PointerEventPass
 import androidx.compose.ui.input.pointer.PointerId
 import androidx.compose.ui.input.pointer.PointerInputChange
-import androidx.compose.ui.input.pointer.changedToDown
-import androidx.compose.ui.input.pointer.changedToUp
+import androidx.compose.ui.input.pointer.changedToDownIgnoreConsumed
+import androidx.compose.ui.input.pointer.changedToUpIgnoreConsumed
 import androidx.compose.ui.input.pointer.pointerInput
 import kotlin.math.max
 import kotlinx.coroutines.coroutineScope
@@ -147,8 +147,8 @@ fun Modifier.onGestures(state: GestureState): Modifier {
                 event = awaitPointerEvent(pass = PointerEventPass.Initial)
                 var dragPointer: PointerInputChange? = null
                 for (change in event.changes) {
-                    if (change.changedToDown()) info.pointers++
-                    else if (change.changedToUp()) info.pointers--
+                    if (change.changedToDownIgnoreConsumed()) info.pointers++
+                    else if (change.changedToUpIgnoreConsumed()) info.pointers--
                     info.maxPointers = max(info.maxPointers, info.pointers)
                     if (change.id == info.dragId) dragPointer = change
                 }
