@@ -131,10 +131,7 @@ fun Bitmap.ensureCorrectOrientation(orientation: Int): Bitmap {
             ExifInterface.ORIENTATION_NORMAL -> return this@ensureCorrectOrientation
             ExifInterface.ORIENTATION_FLIP_HORIZONTAL -> setScale(-DEFAULT_SCALE, DEFAULT_SCALE)
             ExifInterface.ORIENTATION_ROTATE_180 -> setRotate(VERTICAL_ROTATION_ANGLE)
-            ExifInterface.ORIENTATION_FLIP_VERTICAL -> {
-                setRotate(VERTICAL_ROTATION_ANGLE)
-                postScale(-DEFAULT_SCALE, DEFAULT_SCALE)
-            }
+            ExifInterface.ORIENTATION_FLIP_VERTICAL -> postScale(DEFAULT_SCALE, -DEFAULT_SCALE)
 
             ExifInterface.ORIENTATION_TRANSPOSE -> {
                 setRotate(DEFAULT_ROTATION_ANGLE)
