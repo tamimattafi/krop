@@ -13,7 +13,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.geometry.toRect
 import androidx.compose.ui.graphics.ClipOp
-import androidx.compose.ui.graphics.Matrix
 import androidx.compose.ui.graphics.drawscope.clipPath
 import androidx.compose.ui.graphics.drawscope.withTransform
 import androidx.compose.ui.layout.onGloballyPositioned
@@ -70,6 +69,9 @@ fun CropperPreview(
         modifier = modifier
             .onGloballyPositioned { view = it.size }
             .background(color = style.backgroundColor)
+            .disabledSystemGestureArea {
+                cropRect
+            }
             .cropperTouch(
                 region = state.region,
                 onRegion = { state.region = it },

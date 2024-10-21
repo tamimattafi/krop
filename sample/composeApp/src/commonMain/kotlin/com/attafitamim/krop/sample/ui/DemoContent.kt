@@ -9,6 +9,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.unit.dp
 import com.attafitamim.krop.core.crop.AspectRatio
@@ -21,6 +22,10 @@ import com.attafitamim.krop.core.crop.TriangleCropShape
 import com.attafitamim.krop.core.crop.cropperStyle
 import com.attafitamim.krop.sample.ui.theme.KropTheme
 import com.attafitamim.krop.ui.ImageCropperDialog
+import com.attafitamim.krop.ui.disabledSystemGestureArea
+import com.attafitamim.krop.ui.rememberScreenSize
+
+private const val SwipeDisableAreaPx = 100f
 
 @Composable
 fun DemoContent(
@@ -30,6 +35,8 @@ fun DemoContent(
     onPick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    val screenSize = rememberScreenSize()
+
     if (cropState != null) {
         KropTheme(darkTheme = true) {
             ImageCropperDialog(
@@ -45,7 +52,17 @@ fun DemoContent(
         LoadingDialog(status = loadingStatus)
     }
     Column(
-        modifier = modifier.padding(16.dp),
+        modifier = modifier.padding(16.dp).disabledSystemGestureArea {
+            val rect = Rect(
+                left = -SwipeDisableAreaPx,
+                top = -SwipeDisableAreaPx,
+                right = screenSize.width,
+                bottom = screenSize.height
+            )
+
+            println("Area: $rect")
+            rect
+        },
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         if (selectedImage != null) Image(

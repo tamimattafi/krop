@@ -47,6 +47,25 @@ class MultiplatformConventions : Plugin<Project> {
       wasmJs {
         binaries.executable()
       }
+
+      // Source sets
+      sourceSets.apply {
+        val commonMain = commonMain.get()
+
+        // Skiko
+        val skikoMain = create("skikoMain")
+        skikoMain.dependsOn(commonMain)
+        iosMain.get().dependsOn(skikoMain)
+        jsMain.get().dependsOn(skikoMain)
+        wasmJsMain.get().dependsOn(skikoMain)
+        getByName("desktopMain").dependsOn(skikoMain)
+
+        // Mobile
+        val mobileMain = create("mobileMain")
+        mobileMain.dependsOn(commonMain)
+        iosMain.get().dependsOn(mobileMain)
+        androidMain.get().dependsOn(mobileMain)
+      }
     }
 
     val javaExtension = project.extensions.getByName("java") as JavaPluginExtension
