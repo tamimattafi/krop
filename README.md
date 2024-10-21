@@ -11,7 +11,7 @@
 
 ## Demo
 <p align="center">
-<img src="art/preview.gif"/>
+<img height="500" src="art/preview.gif"/>
 </p>
 
 ## Getting Started
