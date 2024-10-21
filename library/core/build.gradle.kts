@@ -13,6 +13,10 @@ kotlin {
             implementation(compose.animation)
             implementation(compose.foundation)
         }
+
+        androidMain.dependencies {
+            implementation(libs.android.exif)
+        }
     }
 }
 

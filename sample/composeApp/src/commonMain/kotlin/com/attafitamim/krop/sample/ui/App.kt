@@ -14,11 +14,11 @@ fun App(viewModel: ImagesViewModel) {
             modifier = Modifier.fillMaxSize(),
             color = MaterialTheme.colors.background
         ) {
-            ViewModelDemo(
+            /*ViewModelDemo(
                 viewModel = viewModel,
                 modifier = Modifier.fillMaxSize()
-            )
-            // SimpleDemo(modifier = Modifier.fillMaxSize())
+            )*/
+            SimpleDemo(modifier = Modifier.fillMaxSize())
         }
     }
 }
