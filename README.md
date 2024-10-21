@@ -2,8 +2,8 @@
     <img height="150" src="./art/icon.png"/>
     <br>
     Krop for Kotlin and Compose Multiplatform
-    <p align="center">Easy to use image cropping library for Kotlin and Compose Multiplatform, with support for shapes, aspect-ratios, transformations, large images, auto zoom...</p>
 </h1>
+<p align="center">Easy to use image cropping library for Kotlin and Compose Multiplatform, with support for shapes, aspect-ratios, transformations, large images, auto zoom...</p>
 
 [![Krop Release](https://img.shields.io/github/release/tamimattafi/krop.svg?style=for-the-badge&color=darkgreen)](https://github.com/tamimattafi/krop/releases)
 [![Kotlin](https://img.shields.io/github/languages/top/tamimattafi/krop.svg?style=for-the-badge&color=blueviolet)](https://kotlinlang.org/)
