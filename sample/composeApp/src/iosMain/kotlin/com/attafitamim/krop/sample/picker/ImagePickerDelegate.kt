@@ -1,7 +1,10 @@
+@file:OptIn(ExperimentalForeignApi::class)
+
 package com.attafitamim.krop.sample.picker
 
 import com.attafitamim.krop.core.images.ImageSrc
-import com.attafitamim.krop.core.utils.UIImageSrc
+import com.attafitamim.krop.core.images.UIImageSrc
+import kotlinx.cinterop.ExperimentalForeignApi
 import platform.UIKit.UIImage
 import platform.UIKit.UIImagePickerController
 import platform.UIKit.UIImagePickerControllerDelegateProtocol
@@ -20,7 +23,7 @@ class ImagePickerDelegate(
             ?: didFinishPickingMediaWithInfo[UIImagePickerControllerOriginalImage] as? UIImage
             ?: return
 
-        val imageSrc = UIImageSrc(image)
+        val imageSrc = UIImageSrc(image) ?: return
         picker.dismissViewControllerAnimated(true, null)
         onImage.invoke(imageSrc)
     }
