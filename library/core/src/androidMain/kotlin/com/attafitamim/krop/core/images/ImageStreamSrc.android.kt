@@ -64,13 +64,12 @@ data class ImageStreamSrc(
     }
 }
 
-private suspend fun <R> ImageStream.tryUse(op: (InputStream) -> R): R? {
-    return withContext(Dispatchers.IO) {
+suspend fun <R> ImageStream.tryUse(op: suspend (InputStream) -> R): R? =
+    withContext(Dispatchers.IO) {
         openStream()?.use { stream -> runCatching { op(stream) } }
     }?.onFailure {
         it.printStackTrace()
     }?.getOrNull()
-}
 
 fun regionDecoder(stream: InputStream): BitmapRegionDecoder? {
     @Suppress("DEPRECATION")
