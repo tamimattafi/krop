@@ -1,7 +1,7 @@
 package com.attafitamim.krop.core.images
 
 import androidx.compose.ui.unit.IntSize
-import com.attafitamim.krop.core.utils.getSize
+import com.attafitamim.krop.core.utils.getImageSize
 import com.attafitamim.krop.core.utils.toImageBitmap
 import com.attafitamim.krop.core.utils.toNSURL
 import com.attafitamim.krop.core.utils.toUIImage
@@ -25,8 +25,7 @@ class NSURLImageSrc(
 
         @ExperimentalForeignApi
         operator fun invoke(nsURL: NSURL): NSURLImageSrc? {
-            // TODO: find more optimized way to get size without loading UIImage
-            val size = nsURL.toUIImage()?.getSize() ?: return null
+            val size = nsURL.getImageSize() ?: return null
             return NSURLImageSrc(nsURL, size)
         }
 

@@ -19,7 +19,6 @@ import platform.CoreGraphics.CGContextTranslateCTM
 import platform.CoreGraphics.CGRectApplyAffineTransform
 import platform.CoreGraphics.CGRectMake
 import platform.CoreGraphics.CGSizeMake
-import platform.CoreImage.CIImage
 import platform.Foundation.NSURL
 import platform.UIKit.UIGraphicsBeginImageContextWithOptions
 import platform.UIKit.UIGraphicsEndImageContext
@@ -108,8 +107,5 @@ fun UIImage.getSize(): IntSize? = size.useContents {
 fun NSURL.toUIImage(): UIImage? {
     val nsPath = path ?: return null
     return UIImage.imageWithContentsOfFile(nsPath)
-}
-
-fun CIImage.toUIImage() {
-
+        ?.ensureCorrectOrientation()
 }
