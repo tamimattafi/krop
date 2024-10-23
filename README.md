@@ -10,7 +10,7 @@
 [![License Apache 2.0](https://img.shields.io/github/license/tamimattafi/krop.svg?style=for-the-badge&color=purple)](https://github.com/tamimattafi/krop/blob/main/LICENSE)
 
 ## Demo
-This library supports the following targets: `android`, `ios`, `jvm/desktop`, `js/browser`, `wasmJs`
+Krop supports the following targets: `android`, `ios`, `jvm/desktop`, `js/browser`, `wasmJs`
 But it was tested only on `Android` and `iOS` using the following samples:
 
 <p align="center">
@@ -50,7 +50,7 @@ class MyViewModel : ViewModel {
     val imageCropper = ImageCropper()
 }
 ```
-### 3. Crop
+### 3. Trigger crop action through `imageCropper`
 ```kotlin
 scope.launch {
     val result = imageCropper.crop(bitmap) // Suspends until user accepts or cancels cropping
@@ -61,38 +61,15 @@ scope.launch {
     }
 }
 ```
-### 4. Show the crop dialog
+### 4. Use the state from `imageCropper` to open the crop dialog
 ```kotlin
 val cropState = imageCropper.cropState 
 if(cropState != null) ImageCropperDialog(state = cropState)
 ```
 That's it !
 
-## Using different sources
-### Common
-The `crop` function provides overloads for `ImageBitmap`, but it is also possible to use a custom implementation of `ImageSrc`.
-Available implementations for `ImageSrc` in common code are:
-- `ImageBitmapSrc` - takes `ImageBitmap` as a source.
 
-### Android 
-For android, `crop` function provides overloads for `File`, `Uri` and `ImageStream`.
-Available implementations for `ImageSrc` in android are:
-- `ImageStreamSrc` - takes `ImageStream` as a source.
-
-Available implementations for `ImageStream`:
-- `UriImageStream` - takes `Uri` and `Context` as sources.
-- `FileImageStream` - takes `File` as a source.
-
-### iOS
-For ios, `crop` function provides overloads for `UIImage`, `NSURL` and `PHAsset`.
-You can also use `cropPHAssetLocalIdentifier` and `cropPath` to pass string values.
-
-Available implementations for `ImageSrc` in ios are:
-- `UIImageSrc` - takes `UIImage` as a source.
-- `NSURLImageSrc` - takes `NSURL` or `path: String` as sources.
-- `PHAssetImageSrc` - takes `PHAsset` or `localIdentifier: String` as sources.
-
-## Customization 
+## Customization
 To customize the ui of the image cropper you can provide a different implementation of `CropperStyle` to the cropper dialog.
 You can also use the `cropperStyle` factory function. example :
 ```kotlin
@@ -105,3 +82,29 @@ ImageCropperDialog(
     )
 )
 ```
+
+## Using different sources
+Krop makes it possible to use different images sources depending on the platform.
+
+### Common
+The `crop` function provides overloads for `ImageBitmap`, but it is also possible to use a custom implementation of `ImageSrc`.
+- Available implementations for `ImageSrc` in common code are:
+ - `ImageBitmapSrc` - takes `ImageBitmap` as a source.
+
+### Android 
+For android, `crop` function provides overloads for `File`, `Uri` and `ImageStream`.
+- Available implementations for `ImageSrc` in android are:
+ - `ImageStreamSrc` - takes `ImageStream` as a source.
+
+- Available implementations for `ImageStream`:
+ - `UriImageStream` - takes `Uri` and `Context` as sources.
+ - `FileImageStream` - takes `File` as a source.
+
+### iOS
+For ios, `crop` function provides overloads for `UIImage`, `NSURL` and `PHAsset`.
+You can also use `cropPHAssetLocalIdentifier` and `cropPath` to pass string values.
+
+- Available implementations for `ImageSrc` in ios are:
+ - `UIImageSrc` - takes `UIImage` as a source.
+ - `NSURLImageSrc` - takes `NSURL` or `path: String` as sources.
+ - `PHAssetImageSrc` - takes `PHAsset` or `localIdentifier: String` as sources.
