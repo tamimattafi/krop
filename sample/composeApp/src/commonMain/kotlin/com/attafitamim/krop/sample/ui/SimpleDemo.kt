@@ -9,7 +9,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ImageBitmap
 import com.attafitamim.krop.core.crop.CropError
 import com.attafitamim.krop.core.crop.CropResult
-import com.attafitamim.krop.core.crop.cropSrc
+import com.attafitamim.krop.core.crop.crop
 import com.attafitamim.krop.core.crop.rememberImageCropper
 import com.attafitamim.krop.sample.picker.rememberImagePicker
 import kotlinx.coroutines.launch
@@ -22,7 +22,7 @@ fun SimpleDemo(modifier: Modifier = Modifier) {
     var error by remember { mutableStateOf<CropError?>(null) }
     val imagePicker = rememberImagePicker(onImage = { imageSrc ->
         scope.launch {
-            when (val result = imageCropper.cropSrc(imageSrc)) {
+            when (val result = imageCropper.crop(imageSrc)) {
                 CropResult.Cancelled -> {}
                 is CropError -> error = result
                 is CropResult.Success -> {
