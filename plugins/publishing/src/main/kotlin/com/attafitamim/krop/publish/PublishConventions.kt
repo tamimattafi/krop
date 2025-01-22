@@ -10,7 +10,7 @@ import org.gradle.api.publish.maven.MavenPomScm
 
 class PublishConventions : Plugin<Project> {
 
-  private val version = "0.1.5"
+  private val version = "0.1.6"
   private val group = "com.attafitamim.krop"
 
   override fun apply(project: Project) {
