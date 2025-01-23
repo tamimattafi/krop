@@ -49,8 +49,8 @@ private fun MavenPom.configure() {
 }
 
 private fun MavenPomLicense.configure() {
-  name.set("Apache License 2.0")
-  url.set("https://github.com/tamimattafi/krop/blob/main/LICENSE.md")
+  name.set("Apache-2.0")
+  url.set("https://www.apache.org/licenses/LICENSE-2.0.txt")
 }
 
 private fun MavenPomDeveloper.configure() {
