@@ -5,6 +5,7 @@ package com.attafitamim.krop.core.utils
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.toComposeImageBitmap
 import androidx.compose.ui.unit.IntSize
+import androidx.compose.ui.unit.toIntRect
 import com.attafitamim.krop.core.images.DecodeParams
 import com.attafitamim.krop.core.images.DecodeResult
 import com.attafitamim.krop.core.images.ImageSrc
@@ -38,6 +39,8 @@ class UIImageSrc(
     override val size: IntSize
 ) : ImageSrc {
 
+    private val resultParams = DecodeParams(1, size.toIntRect())
+
     companion object {
         operator fun invoke(sourceImage: UIImage): UIImageSrc {
             val image = sourceImage.ensureCorrectOrientation()
@@ -50,8 +53,8 @@ class UIImageSrc(
     }
 
     override suspend fun open(params: DecodeParams): DecodeResult? {
-        val bitmap = image.toImageBitmap(params) ?: return null
-        return DecodeResult(params, bitmap)
+        val bitmap = image.toImageBitmap(COMPRESSION_QUALITY) ?: return null
+        return DecodeResult(resultParams, bitmap)
     }
 }
 
@@ -69,8 +72,13 @@ fun UIImage.toByteArray(quality: Double): ByteArray? {
     return ByteArray(length.toInt()) { index -> data[index] }
 }
 
+@Deprecated("params will be removed in future major releases. Use quality instead.")
 fun UIImage.toImageBitmap(params: DecodeParams): ImageBitmap? {
     val quality = params.sampleSize * COMPRESSION_QUALITY
+    return toImageBitmap(quality)
+}
+
+fun UIImage.toImageBitmap(quality: Double): ImageBitmap? {
     val byteArray = toByteArray(quality) ?: return null
     return Image.makeFromEncoded(byteArray).toComposeImageBitmap()
 }
