@@ -93,19 +93,19 @@ fun CropperPreview(
                 zoomLimits = zoomLimits,
             )
     ) {
-        withTransform({ transform(totalMat) }) {
-            image?.let { (params, bitmap) ->
+        image?.let { (params, bitmap) ->
+            withTransform({ transform(totalMat) }) {
                 drawImage(
                     bitmap, dstOffset = params.subset.topLeft,
                     dstSize = params.subset.size
                 )
             }
-        }
-        with(style) {
-            clipPath(cropPath, ClipOp.Difference) {
-                drawRect(color = overlayColor)
+            with(style) {
+                clipPath(cropPath, ClipOp.Difference) {
+                    drawRect(color = overlayColor)
+                }
+                drawCropRect(cropRect)
             }
-            drawCropRect(cropRect)
         }
     }
 }
