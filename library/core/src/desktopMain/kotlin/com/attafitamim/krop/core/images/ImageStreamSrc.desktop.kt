@@ -24,7 +24,7 @@ import javax.imageio.ImageIO
 import javax.imageio.ImageReader
 
 
-data class DesktopImageStreamSrc(
+data class ImageStreamSrc(
     private val dataSource: ImageStream,
     override val size: IntSize
 ) : ImageSrc {
@@ -36,7 +36,7 @@ data class DesktopImageStreamSrc(
      * @return DecodeResult containing the processed image
      */
     private suspend fun openRegion(params: DecodeParams): DecodeResult? {
-        return dataSource.use { stream ->
+        return dataSource.tryUse { stream ->
             getImageReader(stream)?.decodeRegion(params)
         }?.let { bufferedImage ->
             DecodeResult(params, bufferedImage.toImageBitmap())
@@ -50,7 +50,7 @@ data class DesktopImageStreamSrc(
      * @return DecodeResult containing the processed image
      */
     private suspend fun openFull(sampleSize: Int, orientation: Int): DecodeResult? {
-        return dataSource.use { stream ->
+        return dataSource.tryUse { stream ->
             getImageReader(stream)?.decodeFull(sampleSize)?.ensureCorrectOrientation(orientation)
         }?.let { bmp ->
             DecodeResult(DecodeParams(sampleSize, size.toIntRect()), bmp.toImageBitmap())
@@ -69,16 +69,16 @@ data class DesktopImageStreamSrc(
     }
 
     companion object {
-        suspend operator fun invoke(dataSource: ImageStream): DesktopImageStreamSrc? {
+        suspend operator fun invoke(dataSource: ImageStream): ImageStreamSrc? {
             val size = dataSource.getImageSize()
                 ?.takeIf { it.width > 0 && it.height > 0 }
                 ?: return null
-            return DesktopImageStreamSrc(dataSource, size)
+            return ImageStreamSrc(dataSource, size)
         }
     }
 }
 
-private suspend fun <R> ImageStream.use(op: suspend (InputStream) -> R): R? {
+private suspend fun <R> ImageStream.tryUse(op: suspend (InputStream) -> R): R? {
     return withContext(Dispatchers.IO) {
         try {
             openStream()?.use { stream -> op(stream) }
@@ -120,7 +120,7 @@ private fun ImageReader.decodeFull(sampleSize: Int) = try {
 }
 
 suspend fun ImageStream.getOrientation(): Int {
-    return use { stream ->
+    return tryUse { stream ->
         val metadata = ImageMetadataReader.readMetadata(stream)
         metadata.getOrientation()
     } ?: 1 // normal orientation by default
@@ -132,38 +132,38 @@ suspend fun ImageStream.getOrientation(): Int {
  *
  * @return image size or null if failed to get
  */
-suspend fun ImageStream.getImageSize(): IntSize? = use { stream ->
+suspend fun ImageStream.getImageSize(): IntSize? = tryUse { stream ->
     try {
         val metadata = ImageMetadataReader.readMetadata(stream)
-        // read file extension from metadata
+        // read MIME type from metadata
         val fileTypeDirectory = metadata.getFirstDirectoryOfType(FileTypeDirectory::class.java)
-        val fileExt = fileTypeDirectory?.getString(FileTypeDirectory.TAG_EXPECTED_FILE_NAME_EXTENSION)
+        val mimeType = fileTypeDirectory?.getString(FileTypeDirectory.TAG_DETECTED_FILE_MIME_TYPE)
 
         var width: Int? = null
         var height: Int? = null
 
-        when (fileExt) {
-            "jpg", "jpeg" -> {
+        when (mimeType) {
+            "image/jpeg" -> {
                 val jpegDirectory = metadata.getFirstDirectoryOfType(JpegDirectory::class.java)
                 width = jpegDirectory?.getInt(JpegDirectory.TAG_IMAGE_WIDTH)
                 height = jpegDirectory?.getInt(JpegDirectory.TAG_IMAGE_HEIGHT)
             }
-            "png" -> {
+            "image/png" -> {
                 val pngDirectory = metadata.getFirstDirectoryOfType(PngDirectory::class.java)
                 width = pngDirectory?.getInt(PngDirectory.TAG_IMAGE_WIDTH)
                 height = pngDirectory?.getInt(PngDirectory.TAG_IMAGE_HEIGHT)
             }
-            "gif" -> {
+            "image/gif" -> {
                 val gifDirectory = metadata.getFirstDirectoryOfType(GifImageDirectory::class.java)
                 width = gifDirectory?.getInt(GifImageDirectory.TAG_WIDTH)
                 height = gifDirectory?.getInt(GifImageDirectory.TAG_HEIGHT)
             }
-            "bmp" -> {
+            "image/bmp" -> {
                 val bmpDirectory = metadata.getFirstDirectoryOfType(BmpHeaderDirectory::class.java)
                 width = bmpDirectory?.getInt(BmpHeaderDirectory.TAG_IMAGE_WIDTH)
                 height = bmpDirectory?.getInt(BmpHeaderDirectory.TAG_IMAGE_HEIGHT)
             }
-            "ico" -> {
+            "image/x-icon" -> {
                 val icoDirectory = metadata.getFirstDirectoryOfType(IcoDirectory::class.java)
                 width = icoDirectory?.getInt(IcoDirectory.TAG_IMAGE_WIDTH)
                 height = icoDirectory?.getInt(IcoDirectory.TAG_IMAGE_HEIGHT)
@@ -181,7 +181,7 @@ suspend fun ImageStream.getImageSize(): IntSize? = use { stream ->
         } else {
             // Fallback to ImageIO if EXIF data is not available
             stream.reset()
-            val reader = getImageReader(stream) ?: return@use null
+            val reader = getImageReader(stream) ?: return@tryUse null
 
             try {
                 width = reader.getWidth(0)
@@ -213,40 +213,40 @@ private fun BufferedImage.toImageBitmap(): ImageBitmap {
 }
 
 private fun BufferedImage.ensureCorrectOrientation(orientation: Int): BufferedImage {
-    if (orientation == 1) return this
+    if (orientation == ImageOrientation.NORMAL) return this
 
     val transform = AffineTransform()
     val width = width.toDouble()
     val height = height.toDouble()
 
     when (orientation) {
-        2 -> { // Flip horizontal
+        ImageOrientation.FLIP_HORIZONTAL -> {
             transform.translate(width, 0.0)
             transform.scale(-1.0, 1.0)
         }
-        3 -> { // Rotate 180°
+        ImageOrientation.ROTATE_180 -> {
             transform.translate(width, height)
             transform.rotate(Math.PI)
         }
-        4 -> { // Flip vertical
+        ImageOrientation.FLIP_VERTICAL -> {
             transform.translate(0.0, height)
             transform.scale(1.0, -1.0)
         }
-        5 -> { // Rotate 90° CW and flip horizontal
+        ImageOrientation.ROTATE_90_CW_FLIP_HORIZONTAL -> {
             transform.rotate(0.5 * Math.PI)
             transform.scale(-1.0, 1.0)
         }
-        6 -> { // Rotate 90° CW
+        ImageOrientation.ROTATE_90_CW -> {
             transform.translate(height, 0.0)
             transform.rotate(0.5 * Math.PI)
         }
-        7 -> { // Rotate 90° CCW and flip horizontal
+        ImageOrientation.ROTATE_90_CCW_FLIP_HORIZONTAL -> {
             transform.scale(-1.0, 1.0)
             transform.translate(-height, 0.0)
             transform.translate(0.0, width)
             transform.rotate(-0.5 * Math.PI)
         }
-        8 -> { // Rotate 90° CCW
+        ImageOrientation.ROTATE_90_CCW -> {
             transform.translate(0.0, width)
             transform.rotate(-0.5 * Math.PI)
         }
@@ -259,8 +259,12 @@ private fun BufferedImage.ensureCorrectOrientation(orientation: Int): BufferedIm
     }
 
     // Calculate destination dimensions based on orientation
-    val destinationWidth = if (orientation in 5..8) height.toInt() else width.toInt()
-    val destinationHeight = if (orientation in 5..8) width.toInt() else height.toInt()
+    val isImageFlipped = isImageSizeFlipped(orientation)
+    val (destinationWidth, destinationHeight) = if (isImageFlipped) {
+        height.toInt() to width.toInt()
+    } else {
+        width.toInt() to height.toInt()
+    }
 
     val destinationImage = BufferedImage(destinationWidth, destinationHeight, destinationType)
     val graphics = destinationImage.createGraphics()
@@ -281,7 +285,8 @@ private fun BufferedImage.ensureCorrectOrientation(orientation: Int): BufferedIm
  */
 private fun isImageSizeFlipped(orientation: Int): Boolean {
     return when (orientation) {
-        5, 6, 7, 8 -> true // These orientations involve 90° or 270° rotation
+        ImageOrientation.ROTATE_90_CW, ImageOrientation.ROTATE_90_CW_FLIP_HORIZONTAL,
+        ImageOrientation.ROTATE_90_CCW, ImageOrientation.ROTATE_90_CCW_FLIP_HORIZONTAL -> true
         else -> false
     }
 }

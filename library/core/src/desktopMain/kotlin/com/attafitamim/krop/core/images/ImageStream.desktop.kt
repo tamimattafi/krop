@@ -14,4 +14,4 @@ class FileImageStream(private val file: File) : ImageStream {
 }
 
 @Throws(IOException::class, NullPointerException::class)
-suspend fun File.toImageSrc() = DesktopImageStreamSrc(FileImageStream(this))
+suspend fun File.toImageSrc() = ImageStreamSrc(FileImageStream(this))

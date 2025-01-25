@@ -63,12 +63,12 @@ class DesktopImagePicker(
 
 private fun String.mimeToExtensions(): Array<String> {
     return when (this) {
-        "image/jpeg" -> arrayOf("jpg", "jpeg")
+        "image/jpeg" -> arrayOf("jpg", "jpeg", "jfif", "pjpeg", "pjp")
         "image/png" -> arrayOf("png")
         "image/gif" -> arrayOf("gif")
         "image/bmp" -> arrayOf("bmp")
-        "image/ico" -> arrayOf("ico")
-        "image/*" -> arrayOf("jpg", "jpeg", "png", "gif", "bmp", "ico")
+        "image/ico" -> arrayOf("ico", "cur")
+        "image/*" -> arrayOf("jpg", "jpeg", "jfif", "pjpeg", "pjp", "png", "gif", "bmp", "ico", "cur")
         else -> arrayOf()
     }
 }
