@@ -1,3 +1,5 @@
+import org.jetbrains.compose.desktop.application.dsl.TargetFormat
+
 plugins {
     alias(libs.plugins.kotlin.multiplatform)
     alias(libs.plugins.android.application)
@@ -16,6 +18,8 @@ kotlin {
             }
         }
     }
+
+    jvm("desktop")
     
     listOf(
         iosX64(),
@@ -49,6 +53,14 @@ kotlin {
         androidMain.dependencies {
             implementation(compose.preview)
             implementation(libs.android.activity.compose)
+        }
+
+        val desktopMain by getting {
+            dependencies {
+                implementation(compose.desktop.currentOs)
+                implementation(libs.kotlinx.coroutines.swing)
+                implementation(libs.androidx.collection)
+            }
         }
     }
 }
@@ -95,3 +107,14 @@ android {
     }
 }
 
+compose.desktop {
+    application {
+        mainClass = "com.attafitamim.krop.sample.MainKt"
+
+        nativeDistributions {
+            targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
+            packageName = "com.attafitamim.krop"
+            packageVersion = "1.0.0"
+        }
+    }
+}

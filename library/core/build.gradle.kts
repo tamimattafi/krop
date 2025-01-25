@@ -6,6 +6,7 @@ plugins {
 }
 
 kotlin {
+    jvm("desktop")
     sourceSets {
         commonMain.dependencies {
             implementation(compose.runtime)
@@ -16,6 +17,13 @@ kotlin {
 
         androidMain.dependencies {
             implementation(libs.android.exif)
+        }
+
+        val desktopMain by getting {
+            dependencies {
+                implementation(compose.desktop.currentOs)
+                implementation(libs.metadata.extractor)
+            }
         }
     }
 }
