@@ -1,14 +1,14 @@
 [versions]
 # Kotlin
-kotlin = "2.0.21"
-kotlin-coroutines = "1.9.0"
+kotlin = "2.1.10"
+kotlin-coroutines = "1.10.1"
 kotlin-jvm-target = "17"
 
 # Compose
-compose_plugin = "1.7.0"
+compose_plugin = "1.8.0-alpha03"
 
 # Android
-android-gradle-plugin = "8.3.2"
+android-gradle-plugin = "8.5.0"
 android-activity-compose = "1.9.2"
 androidx_lifecycle = "2.8.6"
 android-test-runner = "1.6.2"
