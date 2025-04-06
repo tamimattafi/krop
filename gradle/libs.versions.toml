@@ -1,18 +1,21 @@
 [versions]
 # Kotlin
 kotlin = "2.1.20"
-kotlin-coroutines = "1.10.1"
+kotlinx-coroutines = "1.10.1"
 kotlin-jvm-target = "17"
 
 # Compose
 compose_plugin = "1.8.0-beta01"
 
 # Android
-android-gradle-plugin = "8.6.1"
-android-activity-compose = "1.10.1"
-androidx_lifecycle = "2.8.7"
+android-gradle-plugin = "8.9.1"
+android-activity-compose = "1.9.2"
+androidx-lifecycle = "2.8.4"
 android-test-runner = "1.6.2"
 androidx-collection = "1.5.0"
+
+# FileKit
+filekit = "0.10.0-beta01"
 
 # Publishing
 maven-publish = "0.31.0"
@@ -26,20 +29,25 @@ metadata-extractor = "2.19.0"
 # Kotlin
 androidx-collection = { module = "androidx.collection:collection", version.ref = "androidx-collection" }
 kotlin-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
+kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinx-coroutines" }
+kotlinx-coroutines-swing = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-swing", version.ref = "kotlinx-coroutines" }
 
 # Android
 android-build-tools = { module = "com.android.tools.build:gradle", version.ref = "android-gradle-plugin"}
 android-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "android-activity-compose" }
-android-lifecycle-runtime = { module = "androidx.lifecycle:lifecycle-runtime", version.ref = "androidx_lifecycle" }
-android-lifecycle-view-model = { module = "androidx.lifecycle:lifecycle-viewmodel", version.ref = "androidx_lifecycle" }
-kotlinx-coroutines-swing = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-swing", version.ref = "kotlin-coroutines" }
+androidx-lifecycle-viewmodel = { group = "org.jetbrains.androidx.lifecycle", name = "lifecycle-viewmodel", version.ref = "androidx-lifecycle" }
+androidx-lifecycle-runtime-compose = { group = "org.jetbrains.androidx.lifecycle", name = "lifecycle-runtime-compose", version.ref = "androidx-lifecycle" }
+
+# FileKit
+filekit-core = { module = "io.github.vinceglb:filekit-core", version.ref = "filekit" }
+filekit-dialogs-compose = { module = "io.github.vinceglb:filekit-dialogs-compose", version.ref = "filekit" }
 
 # Publish
 maven-publish-plugin = { module = "com.vanniktech.maven.publish.base:com.vanniktech.maven.publish.base.gradle.plugin", version.ref = "maven-publish" }
 
 # Testing
 junit = { group = "junit", name = "junit", version.ref = "junit" }
-kotlin-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlin-coroutines" }
+kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinx-coroutines" }
 android-test-runner = { module = "androidx.test:runner", version.ref = "android-test-runner" }
 android-exif = { module = "androidx.exifinterface:exifinterface", version.ref = "android-exif" }
 metadata-extractor = { module = "com.drewnoakes:metadata-extractor", version.ref = "metadata-extractor" }

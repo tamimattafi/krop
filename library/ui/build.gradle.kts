@@ -34,5 +34,5 @@ dependencies {
     // Testing
     desktopTestImplementation(libs.junit)
     androidTestImplementation(libs.android.test.runner)
-    androidTestImplementation(libs.kotlin.coroutines.test)
+    androidTestImplementation(libs.kotlinx.coroutines.test)
 }

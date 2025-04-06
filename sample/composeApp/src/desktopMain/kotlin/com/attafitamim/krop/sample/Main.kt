@@ -5,8 +5,12 @@ import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
 import com.attafitamim.krop.sample.presentation.ImagesViewModel
 import com.attafitamim.krop.sample.ui.App
+import io.github.vinceglb.filekit.FileKit
 
 fun main() {
+    // Initialize FileKit
+    FileKit.init("KropSample")
+
     application {
         Window(
             title = "Krop Sample",
