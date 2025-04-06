@@ -21,7 +21,7 @@ kotlin {
             implementation(libs.kotlinx.coroutines.core)
         }
 
-        val nonMobileMain by creating {
+        val webMain by creating {
             dependsOn(commonMain.get())
         }
         val nonAndroidMain by creating {
@@ -29,11 +29,10 @@ kotlin {
         }
 
         iosMain.get().dependsOn(nonAndroidMain)
-        desktopMain.get().dependsOn(nonMobileMain)
         desktopMain.get().dependsOn(nonAndroidMain)
-        jsMain.get().dependsOn(nonMobileMain)
+        jsMain.get().dependsOn(webMain)
         jsMain.get().dependsOn(nonAndroidMain)
-        wasmJsMain.get().dependsOn(nonMobileMain)
+        wasmJsMain.get().dependsOn(webMain)
         wasmJsMain.get().dependsOn(nonAndroidMain)
     }
 }
