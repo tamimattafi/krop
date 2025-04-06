@@ -112,11 +112,11 @@ suspend fun copy(src: Uri, dst: File, context: Context) = withContext(Dispatcher
     }
 }
 
-suspend fun copy(src: ImageStream, dst: File) = src.tryUse { srcStream ->
+private suspend fun copy(src: ImageStream, dst: File) = src.tryUse { srcStream ->
     copy(srcStream, dst)
 }
 
-fun copy(srcStream: InputStream, dst: File): Uri {
+private fun copy(srcStream: InputStream, dst: File): Uri {
     dst.parentFile?.mkdirs()
     dst.outputStream().use { dstStream ->
         srcStream.copyTo(dstStream)
