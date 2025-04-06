@@ -20,5 +20,5 @@ dependencyResolutionManagement {
 rootProject.name = "Krop"
 include(":library:core")
 include(":library:ui")
-include(":library:filekit")
+include(":library:extensions:filekit")
 include(":sample:composeApp")

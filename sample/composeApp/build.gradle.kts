@@ -60,7 +60,7 @@ kotlin {
         commonMain.dependencies {
             // Library
             implementation(projects.library.ui)
-            implementation(projects.library.filekit)
+            implementation(projects.library.extensions.filekit)
 
             // Compose
             implementation(compose.runtime)
