@@ -1,3 +1,7 @@
+import org.jetbrains.compose.desktop.application.dsl.TargetFormat
+import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
+import org.jetbrains.kotlin.gradle.targets.js.webpack.KotlinWebpackConfig
+
 plugins {
     alias(libs.plugins.kotlin.multiplatform)
     alias(libs.plugins.android.application)
@@ -16,7 +20,7 @@ kotlin {
             }
         }
     }
-    
+
     listOf(
         iosX64(),
         iosArm64(),
@@ -27,11 +31,36 @@ kotlin {
             isStatic = true
         }
     }
-    
+
+    jvm("desktop")
+
+    @OptIn(ExperimentalWasmDsl::class)
+    wasmJs {
+        outputModuleName = "composeApp"
+        browser {
+            val rootDirPath = project.rootDir.path
+            val projectDirPath = project.projectDir.path
+            commonWebpackConfig {
+                outputFileName = "composeApp.js"
+                devServer = (devServer ?: KotlinWebpackConfig.DevServer()).apply {
+                    static = (static ?: mutableListOf()).apply {
+                        // Serve sources to debug inside browser
+                        add(rootDirPath)
+                        add(projectDirPath)
+                    }
+                }
+            }
+        }
+        binaries.executable()
+    }
+
     sourceSets {
+        val desktopMain by getting
+
         commonMain.dependencies {
             // Library
             implementation(projects.library.ui)
+            implementation(projects.library.filekit)
 
             // Compose
             implementation(compose.runtime)
@@ -42,20 +71,41 @@ kotlin {
             implementation(compose.components.uiToolingPreview)
 
             // Lifecycle
-            implementation(libs.android.lifecycle.runtime)
-            implementation(libs.android.lifecycle.view.model)
+            implementation(libs.androidx.lifecycle.runtime.compose)
+            implementation(libs.androidx.lifecycle.viewmodel)
+
+            // FileKit
+            implementation(libs.filekit.dialogs.compose)
         }
 
         androidMain.dependencies {
             implementation(compose.preview)
             implementation(libs.android.activity.compose)
         }
+
+        desktopMain.dependencies {
+            implementation(compose.desktop.currentOs)
+            implementation(libs.kotlinx.coroutines.swing)
+        }
+
+        val webMain by creating {
+            dependsOn(commonMain.get())
+        }
+        jsMain.get().dependsOn(webMain)
+        wasmJsMain.get().dependsOn(webMain)
+
+        val nonWebMain by creating {
+            dependsOn(commonMain.get())
+        }
+        androidMain.get().dependsOn(nonWebMain)
+        desktopMain.dependsOn(nonWebMain)
+        iosMain.get().dependsOn(nonWebMain)
     }
 }
 
 android {
     namespace = "com.attafitamim.krop"
-    compileSdk = 34
+    compileSdk = 35
 
     sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
     sourceSets["main"].res.srcDirs("src/androidMain/res")
@@ -64,7 +114,7 @@ android {
     defaultConfig {
         applicationId = "com.attafitamim.krop"
         minSdk = 21
-        targetSdk = 34
+        targetSdk = 35
         versionCode = 1
         versionName = "1.0"
     }
@@ -95,3 +145,14 @@ android {
     }
 }
 
+compose.desktop {
+    application {
+        mainClass = "com.attafitamim.krop.sample.ui.MainKt"
+
+        nativeDistributions {
+            targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
+            packageName = "com.attafitamim.krop.sample.ui"
+            packageVersion = "1.0.0"
+        }
+    }
+}
