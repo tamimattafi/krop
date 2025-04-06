@@ -86,6 +86,7 @@ kotlin {
         desktopMain.dependencies {
             implementation(compose.desktop.currentOs)
             implementation(libs.kotlinx.coroutines.swing)
+            implementation(libs.androidx.collection)
         }
 
         val webMain by creating {
@@ -147,11 +148,11 @@ android {
 
 compose.desktop {
     application {
-        mainClass = "com.attafitamim.krop.sample.ui.MainKt"
+        mainClass = "com.attafitamim.krop.sample.MainKt"
 
         nativeDistributions {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
-            packageName = "com.attafitamim.krop.sample.ui"
+            packageName = "com.attafitamim.krop"
             packageVersion = "1.0.0"
         }
     }
