@@ -3,7 +3,7 @@ package com.attafitamim.krop.ui
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.GenericShape
-import androidx.compose.material.Surface
+import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -124,7 +124,7 @@ fun OptionsPopup(
     ) {
         Surface(
             shape = popupShape(anchorPos = anchorPos),
-            elevation = 8.dp,
+            shadowElevation = 8.dp,
         ) {
             if (isVertical) LazyColumn {
                 items(optionCount) { i -> option(i) }
