@@ -4,8 +4,8 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.Button
-import androidx.compose.material.Text
+import androidx.compose.material3.Button
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -28,6 +28,7 @@ fun DemoContent(
     loadingStatus: CropperLoading?,
     selectedImage: ImageBitmap?,
     onPick: () -> Unit,
+    onSave: (ImageBitmap) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     if (cropState != null) {
@@ -53,6 +54,11 @@ fun DemoContent(
             modifier = Modifier.weight(1f)
         ) else Box(contentAlignment = Alignment.Center, modifier = Modifier.weight(1f)) {
             Text("No image selected !")
+        }
+        if (selectedImage != null) {
+            Button(onClick = { onSave(selectedImage) }) {
+                Text("Save cropped image")
+            }
         }
         Button(onClick = onPick) { Text("Choose Image") }
     }

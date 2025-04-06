@@ -7,7 +7,8 @@ import com.attafitamim.krop.core.crop.CropError
 import com.attafitamim.krop.core.crop.CropResult
 import com.attafitamim.krop.core.crop.crop
 import com.attafitamim.krop.core.crop.imageCropper
-import com.attafitamim.krop.core.images.ImageSrc
+import com.attafitamim.krop.filekit.toImageSrc
+import io.github.vinceglb.filekit.PlatformFile
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
@@ -23,9 +24,10 @@ class ImagesViewModel : ViewModel() {
         _cropError.value = null
     }
 
-    fun setSelectedImage(imageSrc: ImageSrc) {
+    fun setSelectedImage(file: PlatformFile) {
         viewModelScope.launch {
-            when(val result = imageCropper.crop(imageSrc = imageSrc)) {
+            val imageSrc = file.toImageSrc()
+            when(val result = imageCropper.crop(imageSrc)) {
                 CropResult.Cancelled -> {}
                 is CropError -> _cropError.value = result
                 is CropResult.Success -> {
