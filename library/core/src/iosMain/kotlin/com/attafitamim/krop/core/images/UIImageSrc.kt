@@ -4,34 +4,39 @@ package com.attafitamim.krop.core.images
 
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.toIntRect
+import com.attafitamim.krop.core.utils.DEFAULT_BITMAP_COMPRESSION_QUALITY
 import com.attafitamim.krop.core.utils.ensureCorrectOrientation
+import com.attafitamim.krop.core.utils.getSize
 import com.attafitamim.krop.core.utils.toImageBitmap
-import kotlin.math.roundToInt
 import kotlinx.cinterop.ExperimentalForeignApi
-import kotlinx.cinterop.useContents
 import platform.UIKit.UIImage
 
 class UIImageSrc(
     private val image: UIImage,
     override val size: IntSize,
-    private val quality: Double = 1.0,
+    private val quality: Double = DEFAULT_BITMAP_COMPRESSION_QUALITY,
 ) : ImageSrc {
 
     private val resultParams = DecodeParams(1, size.toIntRect())
 
-    companion object {
-        operator fun invoke(sourceImage: UIImage): UIImageSrc {
-            val image = sourceImage.ensureCorrectOrientation()
-            val size = image.size.useContents {
-                IntSize(width.roundToInt(), height.roundToInt())
-            }
-
-            return UIImageSrc(image, size)
-        }
-    }
-
     override suspend fun open(params: DecodeParams): DecodeResult? {
         val bitmap = image.toImageBitmap(quality) ?: return null
         return DecodeResult(resultParams, bitmap)
+    }
+
+    companion object {
+        operator fun invoke(
+            sourceImage: UIImage,
+            quality: Double = DEFAULT_BITMAP_COMPRESSION_QUALITY
+        ): ImageSrc? {
+            val image = sourceImage.ensureCorrectOrientation()
+            val size = image.getSize() ?: return null
+
+            return UIImageSrc(
+                image = image,
+                size = size,
+                quality = quality
+            )
+        }
     }
 }

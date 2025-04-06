@@ -57,7 +57,7 @@ data class ImageStreamSrc(
     }
 
     companion object {
-        suspend operator fun invoke(dataSource: ImageStream): ImageStreamSrc? {
+        suspend operator fun invoke(dataSource: ImageStream): ImageSrc? {
             val size = dataSource.getImageSize() ?: return null
             return ImageStreamSrc(dataSource, size)
         }

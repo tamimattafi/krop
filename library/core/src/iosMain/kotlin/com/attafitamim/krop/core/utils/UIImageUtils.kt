@@ -3,7 +3,6 @@ package com.attafitamim.krop.core.utils
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.toComposeImageBitmap
 import androidx.compose.ui.unit.IntSize
-import com.attafitamim.krop.core.images.DecodeParams
 import kotlin.math.floor
 import kotlin.math.roundToInt
 import kotlinx.cinterop.ByteVar
@@ -27,7 +26,7 @@ import platform.UIKit.UIGraphicsGetImageFromCurrentImageContext
 import platform.UIKit.UIImage
 import platform.UIKit.UIImageJPEGRepresentation
 
-private const val COMPRESSION_QUALITY = 1.0
+internal const val DEFAULT_BITMAP_COMPRESSION_QUALITY = 1.0
 private const val DEFAULT_ANGLE = 2 * kotlin.math.PI
 
 @OptIn(ExperimentalForeignApi::class)
@@ -42,12 +41,6 @@ fun UIImage.toByteArray(quality: Double): ByteArray? {
 
     val data: CPointer<ByteVar> = bytes.reinterpret()
     return ByteArray(length.toInt()) { index -> data[index] }
-}
-
-@Deprecated("params will be removed in future major releases. Use quality instead.")
-fun UIImage.toImageBitmap(params: DecodeParams): ImageBitmap? {
-    val quality = params.sampleSize * COMPRESSION_QUALITY
-    return toImageBitmap(quality)
 }
 
 fun UIImage.toImageBitmap(quality: Double): ImageBitmap? {
@@ -107,7 +100,7 @@ fun UIImage.ensureCorrectOrientation(): UIImage {
 @ExperimentalForeignApi
 fun UIImage.getSize(): IntSize? = size.useContents {
     IntSize(width.roundToInt(), height.roundToInt())
-} .validateSize()
+}.validateSize()
 
 fun NSURL.toUIImage(): UIImage? {
     val nsPath = path ?: return null

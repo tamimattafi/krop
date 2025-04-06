@@ -15,7 +15,6 @@ import platform.UIKit.UIImage
  * The resulting image will be scaled down to fit [maxResultSize] if provided.
  * [uiImage] will be used as a source.
  */
-@OptIn(ExperimentalForeignApi::class)
 suspend fun ImageCropper.crop(
     uiImage: UIImage,
     maxResultSize: IntSize? = DefaultMaxCropSize,
