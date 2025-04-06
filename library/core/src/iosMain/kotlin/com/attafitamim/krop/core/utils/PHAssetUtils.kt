@@ -21,7 +21,6 @@ fun loadPHAsset(localIdentifier: String): PHAsset? {
         options = null
     )
 
-    // TODO: check if results will always return list of PHAsset and not Collection
     return results.firstObject as? PHAsset
 }
 

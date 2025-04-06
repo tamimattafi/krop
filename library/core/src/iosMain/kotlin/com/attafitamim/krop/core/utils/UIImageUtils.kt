@@ -44,8 +44,13 @@ fun UIImage.toByteArray(quality: Double): ByteArray? {
     return ByteArray(length.toInt()) { index -> data[index] }
 }
 
+@Deprecated("params will be removed in future major releases. Use quality instead.")
 fun UIImage.toImageBitmap(params: DecodeParams): ImageBitmap? {
     val quality = params.sampleSize * COMPRESSION_QUALITY
+    return toImageBitmap(quality)
+}
+
+fun UIImage.toImageBitmap(quality: Double): ImageBitmap? {
     val byteArray = toByteArray(quality) ?: return null
     return Image.makeFromEncoded(byteArray).toComposeImageBitmap()
 }

@@ -1,3 +1,5 @@
+import org.jetbrains.compose.desktop.application.dsl.TargetFormat
+
 plugins {
     alias(libs.plugins.kotlin.multiplatform)
     alias(libs.plugins.android.application)
@@ -16,6 +18,8 @@ kotlin {
             }
         }
     }
+
+    jvm("desktop")
     
     listOf(
         iosX64(),
@@ -50,12 +54,20 @@ kotlin {
             implementation(compose.preview)
             implementation(libs.android.activity.compose)
         }
+
+        val desktopMain by getting {
+            dependencies {
+                implementation(compose.desktop.currentOs)
+                implementation(libs.kotlinx.coroutines.swing)
+                implementation(libs.androidx.collection)
+            }
+        }
     }
 }
 
 android {
     namespace = "com.attafitamim.krop"
-    compileSdk = 34
+    compileSdk = 35
 
     sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
     sourceSets["main"].res.srcDirs("src/androidMain/res")
@@ -64,7 +76,7 @@ android {
     defaultConfig {
         applicationId = "com.attafitamim.krop"
         minSdk = 21
-        targetSdk = 34
+        targetSdk = 35
         versionCode = 1
         versionName = "1.0"
     }
@@ -95,3 +107,14 @@ android {
     }
 }
 
+compose.desktop {
+    application {
+        mainClass = "com.attafitamim.krop.sample.MainKt"
+
+        nativeDistributions {
+            targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
+            packageName = "com.attafitamim.krop"
+            packageVersion = "1.0.0"
+        }
+    }
+}
