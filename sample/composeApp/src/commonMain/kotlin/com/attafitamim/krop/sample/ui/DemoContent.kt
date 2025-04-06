@@ -28,6 +28,7 @@ fun DemoContent(
     loadingStatus: CropperLoading?,
     selectedImage: ImageBitmap?,
     onPick: () -> Unit,
+    onSave: (ImageBitmap) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     if (cropState != null) {
@@ -53,6 +54,11 @@ fun DemoContent(
             modifier = Modifier.weight(1f)
         ) else Box(contentAlignment = Alignment.Center, modifier = Modifier.weight(1f)) {
             Text("No image selected !")
+        }
+        if (selectedImage != null) {
+            Button(onClick = { onSave(selectedImage) }) {
+                Text("Save cropped image")
+            }
         }
         Button(onClick = onPick) { Text("Choose Image") }
     }
