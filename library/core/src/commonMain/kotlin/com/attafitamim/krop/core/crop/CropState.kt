@@ -32,6 +32,7 @@ interface CropState {
     val defaultRegion: Rect
     var aspectLock: Boolean
     var shape: CropShape
+    var clipResultToShape: Boolean
     val accepted: Boolean
     fun done(accept: Boolean)
     fun setInitialState(style: CropperStyle)
@@ -45,6 +46,7 @@ fun cropState(
     val defaultTransform: ImgTransform = ImgTransform.Identity
     private var defaultShape: CropShape = RectCropShape
     private var defaultAspectLock: Boolean = false
+    private var defaultClipResultToShape: Boolean = true
     override val src: ImageSrc get() = src
     private var _transform: ImgTransform by mutableStateOf(defaultTransform)
     override var transform: ImgTransform
@@ -71,6 +73,7 @@ fun cropState(
     val imgRect by derivedStateOf { getTransformedImageRect(transform, src.size) }
 
     override var shape: CropShape by mutableStateOf(defaultShape)
+    override var clipResultToShape: Boolean by mutableStateOf(defaultClipResultToShape)
     override var aspectLock by mutableStateOf(defaultAspectLock)
 
     private fun onTransformUpdated(old: ImgTransform, new: ImgTransform) {
@@ -100,6 +103,7 @@ fun cropState(
     override fun reset() {
         transform = defaultTransform
         shape = defaultShape
+        clipResultToShape = defaultClipResultToShape
         _region = firstRegion
         aspectLock = defaultAspectLock
     }
