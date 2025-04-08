@@ -5,7 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.attafitamim.krop.core.crop.CropError
 import com.attafitamim.krop.core.crop.CropResult
-import com.attafitamim.krop.core.crop.cropSrc
+import com.attafitamim.krop.core.crop.crop
 import com.attafitamim.krop.core.crop.imageCropper
 import com.attafitamim.krop.filekit.toImageSrc
 import io.github.vinceglb.filekit.PlatformFile
@@ -27,7 +27,7 @@ class ImagesViewModel : ViewModel() {
     fun setSelectedImage(file: PlatformFile) {
         viewModelScope.launch {
             val imageSrc = file.toImageSrc()
-            when(val result = imageCropper.cropSrc(imageSrc)) {
+            when(val result = imageCropper.crop(imageSrc)) {
                 CropResult.Cancelled -> {}
                 is CropError -> _cropError.value = result
                 is CropResult.Success -> {

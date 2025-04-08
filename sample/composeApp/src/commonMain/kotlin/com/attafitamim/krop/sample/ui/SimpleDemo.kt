@@ -10,7 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ImageBitmap
 import com.attafitamim.krop.core.crop.CropError
 import com.attafitamim.krop.core.crop.CropResult
-import com.attafitamim.krop.core.crop.cropSrc
+import com.attafitamim.krop.core.crop.crop
 import com.attafitamim.krop.core.crop.rememberImageCropper
 import com.attafitamim.krop.filekit.encodeToByteArray
 import com.attafitamim.krop.filekit.toImageSrc
@@ -28,7 +28,7 @@ fun SimpleDemo(modifier: Modifier = Modifier) {
         image?.let {
             scope.launch {
                 val imageSrc = image.toImageSrc()
-                when (val result = imageCropper.cropSrc(imageSrc)) {
+                when (val result = imageCropper.crop(imageSrc)) {
                     CropResult.Cancelled -> {}
                     is CropError -> error = result
                     is CropResult.Success -> selectedImage = result.bitmap

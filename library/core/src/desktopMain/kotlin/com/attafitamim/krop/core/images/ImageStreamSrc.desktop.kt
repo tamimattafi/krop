@@ -4,6 +4,7 @@ import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.toComposeImageBitmap
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.toIntRect
+import com.attafitamim.krop.core.utils.validateSize
 import com.drew.imaging.ImageMetadataReader
 import com.drew.metadata.Metadata
 import com.drew.metadata.bmp.BmpHeaderDirectory
@@ -69,10 +70,8 @@ data class ImageStreamSrc(
     }
 
     companion object {
-        suspend operator fun invoke(dataSource: ImageStream): ImageStreamSrc? {
-            val size = dataSource.getImageSize()
-                ?.takeIf { it.width > 0 && it.height > 0 }
-                ?: return null
+        suspend operator fun invoke(dataSource: ImageStream): ImageSrc? {
+            val size = dataSource.getImageSize()?.validateSize() ?: return null
             return ImageStreamSrc(dataSource, size)
         }
     }
@@ -132,7 +131,7 @@ suspend fun ImageStream.getOrientation(): Int {
  *
  * @return image size or null if failed to get
  */
-suspend fun ImageStream.getImageSize(): IntSize? = tryUse { stream ->
+private suspend fun ImageStream.getImageSize(): IntSize? = tryUse { stream ->
     try {
         val metadata = ImageMetadataReader.readMetadata(stream)
         // read MIME type from metadata

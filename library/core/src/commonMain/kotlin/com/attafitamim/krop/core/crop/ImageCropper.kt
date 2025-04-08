@@ -64,13 +64,13 @@ interface ImageCropper {
  * [bmp] will be used as a source.
  */
 suspend fun ImageCropper.crop(
-    maxResultSize: IntSize? = DefaultMaxCropSize,
-    bmp: ImageBitmap
+    bmp: ImageBitmap,
+    maxResultSize: IntSize? = DefaultMaxCropSize
 ): CropResult = crop(maxResultSize = maxResultSize) {
     ImageBitmapSrc(bmp)
 }
 
-suspend fun ImageCropper.cropSrc(
+suspend fun ImageCropper.crop(
     imageSrc: ImageSrc?,
     maxResultSize: IntSize? = DefaultMaxCropSize
 ): CropResult = crop(maxResultSize = maxResultSize) {

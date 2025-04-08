@@ -1,14 +1,8 @@
-@file:OptIn(ExperimentalForeignApi::class)
-
 package com.attafitamim.krop.core.utils
 
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.toComposeImageBitmap
 import androidx.compose.ui.unit.IntSize
-import androidx.compose.ui.unit.toIntRect
-import com.attafitamim.krop.core.images.DecodeParams
-import com.attafitamim.krop.core.images.DecodeResult
-import com.attafitamim.krop.core.images.ImageSrc
 import kotlin.math.floor
 import kotlin.math.roundToInt
 import kotlinx.cinterop.ByteVar
@@ -24,6 +18,7 @@ import platform.CoreGraphics.CGContextTranslateCTM
 import platform.CoreGraphics.CGRectApplyAffineTransform
 import platform.CoreGraphics.CGRectMake
 import platform.CoreGraphics.CGSizeMake
+import platform.Foundation.NSURL
 import platform.UIKit.UIGraphicsBeginImageContextWithOptions
 import platform.UIKit.UIGraphicsEndImageContext
 import platform.UIKit.UIGraphicsGetCurrentContext
@@ -31,32 +26,8 @@ import platform.UIKit.UIGraphicsGetImageFromCurrentImageContext
 import platform.UIKit.UIImage
 import platform.UIKit.UIImageJPEGRepresentation
 
-private const val COMPRESSION_QUALITY = 1.0
+internal const val DEFAULT_BITMAP_COMPRESSION_QUALITY = 1.0
 private const val DEFAULT_ANGLE = 2 * kotlin.math.PI
-
-class UIImageSrc(
-    private val image: UIImage,
-    override val size: IntSize
-) : ImageSrc {
-
-    private val resultParams = DecodeParams(1, size.toIntRect())
-
-    companion object {
-        operator fun invoke(sourceImage: UIImage): UIImageSrc {
-            val image = sourceImage.ensureCorrectOrientation()
-            val size = image.size.useContents {
-                IntSize(width.roundToInt(), height.roundToInt())
-            }
-
-            return UIImageSrc(image, size)
-        }
-    }
-
-    override suspend fun open(params: DecodeParams): DecodeResult? {
-        val bitmap = image.toImageBitmap(COMPRESSION_QUALITY) ?: return null
-        return DecodeResult(resultParams, bitmap)
-    }
-}
 
 @OptIn(ExperimentalForeignApi::class)
 fun UIImage.toByteArray(quality: Double): ByteArray? {
@@ -72,19 +43,13 @@ fun UIImage.toByteArray(quality: Double): ByteArray? {
     return ByteArray(length.toInt()) { index -> data[index] }
 }
 
-@Deprecated("params will be removed in future major releases. Use quality instead.")
-fun UIImage.toImageBitmap(params: DecodeParams): ImageBitmap? {
-    val quality = params.sampleSize * COMPRESSION_QUALITY
-    return toImageBitmap(quality)
-}
-
 fun UIImage.toImageBitmap(quality: Double): ImageBitmap? {
     val byteArray = toByteArray(quality) ?: return null
     return Image.makeFromEncoded(byteArray).toComposeImageBitmap()
 }
 
 @OptIn(ExperimentalForeignApi::class)
-private fun UIImage.ensureCorrectOrientation(): UIImage {
+fun UIImage.ensureCorrectOrientation(): UIImage {
     val newSize = CGRectApplyAffineTransform(
         CGRectMake(
             0.0,
@@ -130,4 +95,15 @@ private fun UIImage.ensureCorrectOrientation(): UIImage {
     UIGraphicsEndImageContext()
 
     return newUIImage ?: this
+}
+
+@ExperimentalForeignApi
+fun UIImage.getSize(): IntSize? = size.useContents {
+    IntSize(width.roundToInt(), height.roundToInt())
+}.validateSize()
+
+fun NSURL.toUIImage(): UIImage? {
+    val nsPath = path ?: return null
+    return UIImage.imageWithContentsOfFile(nsPath)
+        ?.ensureCorrectOrientation()
 }
