@@ -13,7 +13,7 @@
 Krop supports the following targets: `android`, `ios`, `jvm/desktop`, `js/browser`, `wasmJs`
 
 <p align="center">
-<img height="998" width="1728" src="art/preview.gif"/>
+<img height="500" src="art/preview.gif"/>
 </p>
 
 ## Getting Started
