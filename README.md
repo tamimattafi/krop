@@ -11,7 +11,6 @@
 
 ## Demo
 Krop supports the following targets: `android`, `ios`, `jvm/desktop`, `js/browser`, `wasmJs`
-But it was tested only on `Android` and `iOS` using the following samples:
 
 <p align="center">
 <img height="500" src="art/preview.gif"/>
@@ -28,7 +27,7 @@ Compatibility:
 
 | Krop version | Kotlin version | Compose version |
 |--------------|----------------|-----------------|
-| 0.2.0        | 2.1.10         | 1.8.0-alpha03   |
+| 0.2.0        | 2.1.20         | 1.8.0-beta01    |
 | 0.1.4        | 2.0            | 1.7             |
 | 0.1.2        | 2.0            | 1.6             |
 | 0.1.0        | 1.9            | 1.6             |
@@ -37,6 +36,9 @@ Compatibility:
 ```kotlin
 commonMain.dependencies {
     implementation("com.attafitamim.krop:ui:$version")
+    
+    // Optional: use extensions for different 3rd party libraries
+    implementation("com.attafitamim.krop:extensions-filekit:$version")
 }
 ```
 
@@ -95,13 +97,13 @@ ImageCropperDialog(
 ## Use different image sources
 Krop makes it possible to use different image sources depending on the platform.
 
-### Common
+### Common 👥🔵
 The `crop` function provides overloads for `ImageBitmap`, but it is also possible to use a custom implementation of `ImageSrc`.
 
 #### Available implementations for `ImageSrc` in common code are:
 - `ImageBitmapSrc` - takes `ImageBitmap` as a source.
 
-### Android 
+### Android 📱🟢
 For android, `crop` function provides overloads for `File`, `Uri` and `ImageStream`.
 
 #### Available implementations for `ImageSrc` in android are:
@@ -111,7 +113,7 @@ For android, `crop` function provides overloads for `File`, `Uri` and `ImageStre
 - `UriImageStream` - takes `Uri` and `Context` as sources.
 - `FileImageStream` - takes `File` as a source.
 
-### iOS
+### iOS 🍎🟠
 For ios, `crop` function provides overloads for `UIImage`, `NSURL` and `PHAsset`.
 You can also use `cropPHAssetLocalIdentifier` and `cropPath` to pass string values.
 
@@ -119,3 +121,50 @@ You can also use `cropPHAssetLocalIdentifier` and `cropPath` to pass string valu
 - `UIImageSrc` - takes `UIImage` as a source.
 - `NSURLImageSrc` - takes `NSURL` or `path: String` as sources.
 - `PHAssetImageSrc` - takes `PHAsset` or `localIdentifier: String` as sources.
+
+### Desktop 💻🔵
+For desktop, `crop` function provides overloads for `File` and `ImageStream`.
+
+#### Available implementations for `ImageSrc` in desktop are:
+- `ImageStreamSrc` - takes `ImageStream` as a source.
+
+#### Available implementations for `ImageStream`:
+- `FileImageStream` - takes `File` as a source.
+
+## Use extensions
+Krop also makes it possible to use different 3rd party libraries using extension modules.
+
+### FileKit
+**Step 1:** Add FileKit extension to your project:
+```kotlin
+commonMain.dependencies {
+    implementation("com.attafitamim.krop:extensions-filekit:$version")
+}
+```
+
+**Step 2:** Use helper functions to load and save images:
+```kotlin
+val imagePicker = rememberFilePickerLauncher(type = FileKitType.Image) { image ->
+    image?.let {
+        scope.launch {
+            // Convert the selected image to ImageSrc
+            val imageSrc = image.toImageSrc()
+            
+            // Crop the image
+            when (val result = imageCropper.cropSrc(imageSrc)) {
+                CropResult.Cancelled -> {}
+                is CropError -> { /* Handle error */ }
+                is CropResult.Success -> {
+                    // Convert the cropped image to bytes
+                    val bitmap = result.bitmap
+                    val bytes = bitmap.encodeToByteArray()
+                    
+                    // Save the cropped image
+                    val file = FileKit.filesDir / "cropped_image.jpg"
+                    file.write(bytes)
+                }
+            }
+        }
+    }
+}
+```
