@@ -16,7 +16,7 @@ kotlin {
     androidTarget {
         compilations.all {
             kotlinOptions {
-                jvmTarget = libs.versions.kotlin.jvm.target.get()
+                jvmTarget = "17"
             }
         }
     }

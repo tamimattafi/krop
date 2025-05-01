@@ -77,7 +77,7 @@ class MultiplatformConventions : Plugin<Project> {
     val androidExtension = project.extensions.getByName("android") as LibraryExtension
     androidExtension.apply {
       namespace = "com.attafitamim.krop.${project.name}"
-      compileSdk = 34
+      compileSdk = 35
 
       defaultConfig {
         minSdk = 21
