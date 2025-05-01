@@ -197,6 +197,7 @@ private suspend fun ImageStream.getImageSize(): IntSize? = tryUse { stream ->
             }
         }
     } catch (e: Exception) {
+        e.printStackTrace()
         null
     }
 }
@@ -292,5 +293,5 @@ private fun isImageSizeFlipped(orientation: Int): Boolean {
 
 private fun Metadata.getOrientation(): Int {
     val directory = getFirstDirectoryOfType(ExifIFD0Directory::class.java)
-    return directory?.getInt(ExifIFD0Directory.TAG_ORIENTATION) ?: 1
+    return directory?.getInteger(ExifIFD0Directory.TAG_ORIENTATION) ?: ImageOrientation.NORMAL
 }

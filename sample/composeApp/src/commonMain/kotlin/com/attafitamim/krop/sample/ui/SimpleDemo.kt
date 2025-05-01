@@ -47,7 +47,11 @@ fun SimpleDemo(modifier: Modifier = Modifier) {
                 val bytes = bitmap.encodeToByteArray()
 
                 // Save the cropped image
-                saveImage(bytes, "cropped_image.jpg")
+                saveImage(
+                    bytes = bytes,
+                    fileName = "cropped_image",
+                    extension = "jpg",
+                )
             }
         },
         modifier = modifier
@@ -63,4 +67,5 @@ fun SimpleDemo(modifier: Modifier = Modifier) {
 expect suspend fun saveImage(
     bytes: ByteArray,
     fileName: String,
+    extension: String,
 )
