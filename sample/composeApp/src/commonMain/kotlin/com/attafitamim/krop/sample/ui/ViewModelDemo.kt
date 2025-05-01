@@ -27,7 +27,11 @@ fun ViewModelDemo(viewModel: ImagesViewModel, modifier: Modifier = Modifier) {
                 val bytes = bitmap.encodeToByteArray()
 
                 // Save the cropped image
-                saveImage(bytes, "cropped_image.jpg")
+                saveImage(
+                    bytes = bytes,
+                    fileName = "cropped_image",
+                    extension = "jpg",
+                )
             }
         },
         modifier = modifier

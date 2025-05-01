@@ -1,13 +1,14 @@
 package com.attafitamim.krop.sample.ui
 
 import io.github.vinceglb.filekit.FileKit
-import io.github.vinceglb.filekit.saveImageToGallery
+import io.github.vinceglb.filekit.dialogs.openFileSaver
+import io.github.vinceglb.filekit.write
 
-actual suspend fun saveImage(bytes: ByteArray, fileName: String) {
-    // Save to gallery
-    FileKit.saveImageToGallery(bytes, fileName)
+actual suspend fun saveImage(bytes: ByteArray, fileName: String, extension: String) {
+    val file = FileKit.openFileSaver(
+        suggestedName = fileName,
+        extension = extension
+    )
 
-    // Alternatively, save to app-specific directory
-    // val file = FileKit.filesDir / "cropped_image.jpg"
-    // file.write(bytes)
+    file?.write(bytes)
 }
