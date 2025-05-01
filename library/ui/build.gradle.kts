@@ -16,6 +16,7 @@ kotlin {
             implementation(compose.ui)
             implementation(compose.material3)
             implementation(compose.components.resources)
+            implementation(libs.compose.material.icons.core)
         }
 
         androidMain.dependencies {
