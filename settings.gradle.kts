@@ -4,6 +4,7 @@ pluginManagement {
         gradlePluginPortal()
         google()
         mavenCentral()
+        mavenLocal()
     }
 
     includeBuild("plugins")
@@ -14,10 +15,12 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
+        mavenLocal()
     }
 }
 
 rootProject.name = "Krop"
 include(":library:core")
 include(":library:ui")
+include(":library:extensions:filekit")
 include(":sample:composeApp")

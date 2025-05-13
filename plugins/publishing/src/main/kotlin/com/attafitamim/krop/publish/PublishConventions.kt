@@ -8,9 +8,11 @@ import org.gradle.api.publish.maven.MavenPomDeveloper
 import org.gradle.api.publish.maven.MavenPomLicense
 import org.gradle.api.publish.maven.MavenPomScm
 
+private const val ROOT_MODULE_NAME = "library"
+
 class PublishConventions : Plugin<Project> {
 
-  private val version = "0.1.6"
+  private val version = "0.2.0"
   private val group = "com.attafitamim.krop"
 
   override fun apply(project: Project) {
@@ -19,7 +21,7 @@ class PublishConventions : Plugin<Project> {
     val mavenPublishing = project.extensions.getByName("mavenPublishing")
             as MavenPublishBaseExtension
 
-    val artifact = project.name
+    val artifact = project.fullName
     mavenPublishing.apply {
       coordinates(group, artifact, version)
       pom(MavenPom::configure)
@@ -62,4 +64,18 @@ private fun MavenPomScm.configure() {
   connection.set("scm:git:github.com/tamimattafi/krop.git")
   developerConnection.set("scm:git:ssh://github.com/tamimattafi/krop.git")
   url.set("https://github.com/tamimattafi/krop.git")
+}
+
+private val Project.fullName: String get() {
+  val names = ArrayList<String>()
+  names.add(name)
+
+  var currentProject = this
+  while (currentProject.parent != null && currentProject.parent?.name != ROOT_MODULE_NAME) {
+    val parentProject = currentProject.parent!!
+    names.add(parentProject.name)
+    currentProject = parentProject
+  }
+
+  return names.reversed().joinToString("-")
 }

@@ -9,6 +9,7 @@ import androidx.compose.ui.unit.IntRect
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.toIntRect
 import androidx.exifinterface.media.ExifInterface
+import com.attafitamim.krop.core.utils.validateSize
 import java.io.InputStream
 import java.util.concurrent.atomic.AtomicBoolean
 import kotlinx.coroutines.Dispatchers
@@ -56,22 +57,19 @@ data class ImageStreamSrc(
     }
 
     companion object {
-        suspend operator fun invoke(dataSource: ImageStream): ImageStreamSrc? {
-            val size = dataSource.getImageSize()
-                ?.takeIf { it.width > 0 && it.height > 0 }
-                ?: return null
+        suspend operator fun invoke(dataSource: ImageStream): ImageSrc? {
+            val size = dataSource.getImageSize() ?: return null
             return ImageStreamSrc(dataSource, size)
         }
     }
 }
 
-private suspend fun <R> ImageStream.tryUse(op: (InputStream) -> R): R? {
-    return withContext(Dispatchers.IO) {
+suspend fun <R> ImageStream.tryUse(op: suspend (InputStream) -> R): R? =
+    withContext(Dispatchers.IO) {
         openStream()?.use { stream -> runCatching { op(stream) } }
     }?.onFailure {
         it.printStackTrace()
     }?.getOrNull()
-}
 
 fun regionDecoder(stream: InputStream): BitmapRegionDecoder? {
     @Suppress("DEPRECATION")
@@ -114,7 +112,7 @@ suspend fun ImageStream.getImageSize(): IntSize? = tryUse { stream ->
     }
 
     actualSize
-}
+}?.validateSize()
 
 fun isImageSizeFlipped(orientation: Int): Boolean =
     when (orientation) {

@@ -14,8 +14,9 @@ kotlin {
             // Compose
             implementation(compose.runtime)
             implementation(compose.ui)
-            implementation(compose.material)
+            implementation(compose.material3)
             implementation(compose.components.resources)
+            implementation(libs.compose.material.icons.core)
         }
 
         androidMain.dependencies {
@@ -34,5 +35,5 @@ dependencies {
     // Testing
     desktopTestImplementation(libs.junit)
     androidTestImplementation(libs.android.test.runner)
-    androidTestImplementation(libs.kotlin.coroutines.test)
+    androidTestImplementation(libs.kotlinx.coroutines.test)
 }
