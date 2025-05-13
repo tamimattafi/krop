@@ -1,6 +1,6 @@
 [versions]
 # Kotlin
-kotlin = "2.1.21-RC2"
+kotlin = "2.1.21"
 kotlinx-coroutines = "1.10.2"
 
 # Compose
@@ -15,7 +15,7 @@ android-test-runner = "1.6.2"
 androidx-collection = "1.5.0"
 
 # FileKit
-filekit = "0.10.0-beta03"
+filekit = "0.10.0-beta04"
 
 # Publishing
 maven-publish = "0.31.0"
