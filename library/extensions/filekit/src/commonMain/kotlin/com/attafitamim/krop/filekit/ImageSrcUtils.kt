@@ -8,7 +8,9 @@ expect suspend fun PlatformFile.toImageSrc(): ImageSrc?
 
 // Define supported formats
 enum class ImageFormat {
-    PNG, JPEG
+    PNG,
+    JPEG,
+    WEBP,
 }
 
 /**

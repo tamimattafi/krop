@@ -37,6 +37,7 @@ actual suspend fun ImageBitmap.encodeToByteArray(
     val compressFormat = when (format) {
         ImageFormat.JPEG -> Bitmap.CompressFormat.JPEG
         ImageFormat.PNG -> Bitmap.CompressFormat.PNG
+        ImageFormat.WEBP -> Bitmap.CompressFormat.WEBP
     }
     ByteArrayOutputStream().use { bytes ->
         bitmap.compress(compressFormat, quality, bytes)

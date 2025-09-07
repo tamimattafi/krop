@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import com.attafitamim.krop.filekit.ImageFormat
 import com.attafitamim.krop.filekit.encodeToByteArray
 import com.attafitamim.krop.sample.presentation.ImagesViewModel
 import io.github.vinceglb.filekit.dialogs.FileKitType
@@ -24,13 +25,16 @@ fun ViewModelDemo(viewModel: ImagesViewModel, modifier: Modifier = Modifier) {
         onSave = { bitmap ->
             scope.launch {
                 // Convert ImageBitmap to ByteArray
-                val bytes = bitmap.encodeToByteArray()
+                val bytes = bitmap.encodeToByteArray(
+                    format = ImageFormat.WEBP,
+                    quality = 100,
+                )
 
                 // Save the cropped image
                 saveImage(
                     bytes = bytes,
                     fileName = "cropped_image",
-                    extension = "jpg",
+                    extension = "webp",
                 )
             }
         },
