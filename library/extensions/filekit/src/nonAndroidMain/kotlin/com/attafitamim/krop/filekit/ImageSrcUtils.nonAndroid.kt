@@ -23,6 +23,7 @@ actual suspend fun ImageBitmap.encodeToByteArray(
     val imageFormat = when (format) {
         ImageFormat.JPEG -> EncodedImageFormat.JPEG
         ImageFormat.PNG -> EncodedImageFormat.PNG
+        ImageFormat.WEBP -> EncodedImageFormat.WEBP
     }
     Image
         .makeFromBitmap(bitmap)

@@ -12,6 +12,7 @@ import com.attafitamim.krop.core.crop.CropError
 import com.attafitamim.krop.core.crop.CropResult
 import com.attafitamim.krop.core.crop.crop
 import com.attafitamim.krop.core.crop.rememberImageCropper
+import com.attafitamim.krop.filekit.ImageFormat
 import com.attafitamim.krop.filekit.encodeToByteArray
 import com.attafitamim.krop.filekit.toImageSrc
 import io.github.vinceglb.filekit.dialogs.FileKitType
@@ -44,13 +45,16 @@ fun SimpleDemo(modifier: Modifier = Modifier) {
         onSave = { bitmap ->
             scope.launch {
                 // Convert ImageBitmap to ByteArray
-                val bytes = bitmap.encodeToByteArray()
+                val bytes = bitmap.encodeToByteArray(
+                    format = ImageFormat.WEBP,
+                    quality = 100,
+                )
 
                 // Save the cropped image
                 saveImage(
                     bytes = bytes,
                     fileName = "cropped_image",
-                    extension = "jpg",
+                    extension = "webp",
                 )
             }
         },
