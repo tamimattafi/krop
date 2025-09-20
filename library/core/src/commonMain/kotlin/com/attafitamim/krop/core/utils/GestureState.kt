@@ -11,13 +11,21 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.input.pointer.PointerEvent
 import androidx.compose.ui.input.pointer.PointerEventPass
+import androidx.compose.ui.input.pointer.PointerEventType
 import androidx.compose.ui.input.pointer.PointerId
 import androidx.compose.ui.input.pointer.PointerInputChange
 import androidx.compose.ui.input.pointer.changedToDownIgnoreConsumed
 import androidx.compose.ui.input.pointer.changedToUpIgnoreConsumed
+import androidx.compose.ui.input.pointer.isAltPressed
+import androidx.compose.ui.input.pointer.isCtrlPressed
+import androidx.compose.ui.input.pointer.isMetaPressed
+import androidx.compose.ui.input.pointer.isShiftPressed
 import androidx.compose.ui.input.pointer.pointerInput
+import kotlin.math.exp
 import kotlin.math.max
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 interface GestureState {
@@ -58,16 +66,55 @@ inline fun tapState(
 }
 
 interface ZoomState {
+
+    /**
+     * Enable using trackpad/mouse wheel to ZOOM.
+     */
+    val wheelZoomEnabled: Boolean get() = true
+
+    /**
+     * Which keyboard modifiers enable wheel-to-zoom. Default Ctrl or Meta (Cmd) like in browsers.
+     */
+    val wheelZoomTrigger: WheelZoomTrigger get() = WheelZoomTrigger.CtrlOrMeta
+
+    /**
+     * Multiplicative zoom speed; higher = faster zoom per wheel tick.
+     * Used as exponent factor in exp(-dy * speed) to keep scale > 0.
+     */
+    val wheelZoomSpeed: Float get() = 0.15f
+
+    /**
+     * Idle timeout after the last wheel event to consider the gesture complete and call onDone().
+     */
+    val wheelEndTimeoutMillis: Long get() = 180L
+
     fun onBegin(cx: Float, cy: Float) = Unit
     fun onNext(scale: Float, cx: Float, cy: Float) = Unit
     fun onDone() = Unit
+}
+
+enum class WheelZoomTrigger {
+    Any,
+    CtrlOrMeta,
+    CtrlOnly,
+    MetaOnly,
+    AltOnly,
+    ShiftOnly,
 }
 
 inline fun zoomState(
     crossinline begin: (center: Offset) -> Unit = { },
     crossinline done: () -> Unit = {},
     crossinline next: (scale: Float, center: Offset) -> Unit = { _, _ -> },
+    zoomEnabled: Boolean = true,
+    zoomTrigger: WheelZoomTrigger = WheelZoomTrigger.CtrlOrMeta,
+    zoomSpeed: Float = 0.15f,
+    endTimeoutMillis: Long = 180L,
 ): ZoomState = object : ZoomState {
+    override val wheelZoomEnabled: Boolean = zoomEnabled
+    override val wheelZoomTrigger: WheelZoomTrigger = zoomTrigger
+    override val wheelZoomSpeed: Float = zoomSpeed
+    override val wheelEndTimeoutMillis: Long = endTimeoutMillis
     override fun onBegin(cx: Float, cy: Float) = begin(Offset(cx, cy))
     override fun onNext(scale: Float, cx: Float, cy: Float) = next(scale, Offset(cx, cy))
     override fun onDone() = done()
@@ -101,13 +148,12 @@ private data class GestureData(
     var isTap: Boolean = false,
 )
 
-
 fun Modifier.onGestures(state: GestureState): Modifier {
     var info = GestureData()
     return pointerInput(Unit) {
         coroutineScope {
             launch {
-                detectTapGestures( // Note: currently unused
+                detectTapGestures(
                     onLongPress = { state.tap.onLongPress(it.x, it.y, info.maxPointers) },
                     onTap = { state.tap.onTap(it.x, it.y, info.maxPointers) },
                 )
@@ -164,6 +210,63 @@ fun Modifier.onGestures(state: GestureState): Modifier {
             }
             if (info.isDrag) state.drag.onDone()
             if (info.isZoom) state.zoom.onDone()
+        }
+    }.pointerInput(state) {
+        coroutineScope {
+            awaitPointerEventScope {
+                var wheelZoomActive = false
+                var wheelEndJob: Job? = null
+
+                fun scheduleWheelEnd(onDone: () -> Unit) {
+                    wheelEndJob?.cancel()
+                    wheelEndJob = launch {
+                        delay(state.zoom.wheelEndTimeoutMillis)
+                        onDone()
+                    }
+                }
+
+                while (true) {
+                    val event = awaitPointerEvent(PointerEventPass.Initial)
+                    if (event.type == PointerEventType.Scroll) {
+                        var scroll = Offset.Zero
+                        for (c in event.changes) scroll += c.scrollDelta
+                        if (scroll != Offset.Zero) {
+                            val pos = event.changes.firstOrNull()?.position ?: Offset.Zero
+
+                            val isZoomTrigger = with(event.keyboardModifiers) {
+                                when (state.zoom.wheelZoomTrigger) {
+                                    WheelZoomTrigger.Any -> true
+                                    WheelZoomTrigger.CtrlOrMeta -> isCtrlPressed || isMetaPressed
+                                    WheelZoomTrigger.CtrlOnly -> isCtrlPressed
+                                    WheelZoomTrigger.MetaOnly -> isMetaPressed
+                                    WheelZoomTrigger.AltOnly -> isAltPressed
+                                    WheelZoomTrigger.ShiftOnly -> isShiftPressed
+                                }
+                            }
+
+                            val shouldZoom = state.zoom.wheelZoomEnabled && isZoomTrigger
+
+                            if (shouldZoom) {
+                                if (!wheelZoomActive) {
+                                    state.zoom.onBegin(pos.x, pos.y)
+                                    wheelZoomActive = true
+                                }
+                                val scale = exp(-scroll.y * state.zoom.wheelZoomSpeed)
+                                if (scale != 1f && scale > 0f) {
+                                    state.zoom.onNext(scale, pos.x, pos.y)
+                                }
+                                scheduleWheelEnd {
+                                    if (wheelZoomActive) {
+                                        state.zoom.onDone()
+                                        wheelZoomActive = false
+                                    }
+                                }
+                                continue
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 }
