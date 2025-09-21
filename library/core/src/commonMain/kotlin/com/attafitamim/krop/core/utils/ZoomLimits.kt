@@ -5,7 +5,7 @@ import androidx.compose.ui.unit.IntSize
 class ZoomLimits(
     originalImageSize: IntSize,
     view: IntSize,
-    minCropSize: Float,
+    val minCropSize: Float,
 ) {
     val maxFactor: Float
 
