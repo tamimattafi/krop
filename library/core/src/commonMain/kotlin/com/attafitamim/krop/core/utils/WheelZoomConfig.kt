@@ -28,7 +28,7 @@ interface WheelZoomConfig {
 
 @Stable
 fun wheelZoomConfig(
-    enabled: Boolean = true,
+    enabled: Boolean = false,
     trigger: WheelZoomTrigger = WheelZoomTrigger.CtrlOrMeta,
     speed: Float = 0.15f,
     endTimeoutMillis: Long = 180L,
