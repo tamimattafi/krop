@@ -11,6 +11,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.round
 import androidx.compose.ui.unit.toOffset
 import com.attafitamim.krop.core.utils.ViewMat
+import com.attafitamim.krop.core.utils.WheelZoomConfig
 import com.attafitamim.krop.core.utils.ZoomLimits
 import com.attafitamim.krop.core.utils.abs
 import com.attafitamim.krop.core.utils.dragState
@@ -38,6 +39,7 @@ fun Modifier.cropperTouch(
     zooming: MutableState<Boolean>,
     dragging: MutableState<Boolean>,
     zoomLimits: ZoomLimits,
+    wheelZoomConfig: WheelZoomConfig,
 ): Modifier = composed {
     val touchRadPx2 = LocalDensity.current.run {
         remember(touchRad, viewMat.scale) { touchRad.toPx() / viewMat.scale }.let { it * it }
@@ -46,6 +48,7 @@ fun Modifier.cropperTouch(
     onGestures(
         rememberGestureState(
             zoom = zoomState(
+                wheelZoomConfig = wheelZoomConfig,
                 begin = { c ->
                     zooming.value = true
                     viewMat.zoomStart(c)

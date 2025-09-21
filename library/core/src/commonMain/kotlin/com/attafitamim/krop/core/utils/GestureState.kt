@@ -68,28 +68,7 @@ inline fun tapState(
 }
 
 interface ZoomState {
-
-    /**
-     * Enable using trackpad/mouse wheel to ZOOM.
-     */
-    val wheelZoomEnabled: Boolean get() = true
-
-    /**
-     * Which keyboard modifiers enable wheel-to-zoom. Default Ctrl or Meta (Cmd) like in browsers.
-     */
-    val wheelZoomTrigger: WheelZoomTrigger get() = WheelZoomTrigger.CtrlOrMeta
-
-    /**
-     * Multiplicative zoom speed; higher = faster zoom per wheel tick.
-     * Used as exponent factor in exp(-dy * speed) to keep scale > 0.
-     */
-    val wheelZoomSpeed: Float get() = 0.15f
-
-    /**
-     * Idle timeout after the last wheel event to consider the gesture complete and call onDone().
-     */
-    val wheelEndTimeoutMillis: Long get() = 180L
-
+    val wheelZoomConfig: WheelZoomConfig
     fun onBegin(cx: Float, cy: Float) = Unit
     fun onNext(scale: Float, cx: Float, cy: Float) = Unit
     fun onDone() = Unit
@@ -97,26 +76,20 @@ interface ZoomState {
 
 enum class WheelZoomTrigger {
     Any,
+    Ctrl,
+    Meta,
+    Alt,
+    Shift,
     CtrlOrMeta,
-    CtrlOnly,
-    MetaOnly,
-    AltOnly,
-    ShiftOnly,
 }
 
 inline fun zoomState(
+    wheelZoomConfig: WheelZoomConfig = wheelZoomConfig(),
     crossinline begin: (center: Offset) -> Unit = { },
     crossinline done: () -> Unit = {},
     crossinline next: (scale: Float, center: Offset) -> Unit = { _, _ -> },
-    zoomEnabled: Boolean = true,
-    zoomTrigger: WheelZoomTrigger = WheelZoomTrigger.CtrlOrMeta,
-    zoomSpeed: Float = 0.15f,
-    endTimeoutMillis: Long = 180L,
 ): ZoomState = object : ZoomState {
-    override val wheelZoomEnabled: Boolean = zoomEnabled
-    override val wheelZoomTrigger: WheelZoomTrigger = zoomTrigger
-    override val wheelZoomSpeed: Float = zoomSpeed
-    override val wheelEndTimeoutMillis: Long = endTimeoutMillis
+    override val wheelZoomConfig = wheelZoomConfig
     override fun onBegin(cx: Float, cy: Float) = begin(Offset(cx, cy))
     override fun onNext(scale: Float, cx: Float, cy: Float) = next(scale, Offset(cx, cy))
     override fun onDone() = done()
@@ -128,7 +101,9 @@ fun rememberGestureState(
     drag: DragState? = null,
     tap: TapState? = null,
 ): GestureState {
-    val zoomState by rememberUpdatedState(newValue = zoom ?: object : ZoomState {})
+    val zoomState by rememberUpdatedState(newValue = zoom ?: object : ZoomState {
+        override val wheelZoomConfig: WheelZoomConfig = wheelZoomConfig()
+    })
     val dragState by rememberUpdatedState(newValue = drag ?: object : DragState {})
     val tapState by rememberUpdatedState(newValue = tap ?: object : TapState {})
     return object : GestureState {
@@ -217,8 +192,8 @@ fun Modifier.onGestures(state: GestureState): Modifier = pointerInput(Unit) {
             }
         }
 
-        launch {
-            handleScrollWheelZoom(state.zoom, this@coroutineScope)
+        if (state.zoom.wheelZoomConfig.enabled) {
+            launch { handleScrollWheelZoom(state.zoom, this@coroutineScope) }
         }
     }
 }
@@ -234,7 +209,7 @@ private suspend fun PointerInputScope.handleScrollWheelZoom(
         fun scheduleWheelEnd(onDone: () -> Unit) {
             wheelEndJob?.cancel()
             wheelEndJob = coroutineScope.launch {
-                delay(state.wheelEndTimeoutMillis)
+                delay(state.wheelZoomConfig.endTimeoutMillis)
                 onDone()
             }
         }
@@ -248,24 +223,22 @@ private suspend fun PointerInputScope.handleScrollWheelZoom(
                     val pos = event.changes.firstOrNull()?.position ?: Offset.Zero
 
                     val isZoomTrigger = with(event.keyboardModifiers) {
-                        when (state.wheelZoomTrigger) {
+                        when (state.wheelZoomConfig.trigger) {
                             WheelZoomTrigger.Any -> true
                             WheelZoomTrigger.CtrlOrMeta -> isCtrlPressed || isMetaPressed
-                            WheelZoomTrigger.CtrlOnly -> isCtrlPressed
-                            WheelZoomTrigger.MetaOnly -> isMetaPressed
-                            WheelZoomTrigger.AltOnly -> isAltPressed
-                            WheelZoomTrigger.ShiftOnly -> isShiftPressed
+                            WheelZoomTrigger.Ctrl -> isCtrlPressed
+                            WheelZoomTrigger.Meta -> isMetaPressed
+                            WheelZoomTrigger.Alt -> isAltPressed
+                            WheelZoomTrigger.Shift -> isShiftPressed
                         }
                     }
 
-                    val shouldZoom = state.wheelZoomEnabled && isZoomTrigger
-
-                    if (shouldZoom) {
+                    if (isZoomTrigger) {
                         if (!wheelZoomActive) {
                             state.onBegin(pos.x, pos.y)
                             wheelZoomActive = true
                         }
-                        val scale = exp(-scroll.y * state.wheelZoomSpeed)
+                        val scale = exp(-scroll.y * state.wheelZoomConfig.speed)
                         if (scale != 1f && scale > 0f) {
                             state.onNext(scale, pos.x, pos.y)
                         }

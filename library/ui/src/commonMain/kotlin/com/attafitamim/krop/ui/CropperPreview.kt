@@ -94,6 +94,7 @@ fun CropperPreview(
                 zooming = zooming,
                 dragging = dragging,
                 zoomLimits = zoomLimits,
+                wheelZoomConfig = style.wheelZoomConfig,
             )
     ) {
         image?.let { (params, bitmap) ->
