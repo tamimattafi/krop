@@ -48,6 +48,7 @@ fun CropperPreview(
     var view by remember { mutableStateOf(IntSize.Zero) }
     var pendingDrag by remember { mutableStateOf<DragHandle?>(null) }
     val zooming = remember { mutableStateOf(false) }
+    val dragging = remember { mutableStateOf(false) }
     val viewPadding = LocalDensity.current.run { style.touchRad.toPx() }
     val totalMat = remember(viewMat.matrix, imgMat) { imgMat * viewMat.matrix }
     val image = rememberLoadedImage(state.src, view, totalMat)
@@ -70,6 +71,7 @@ fun CropperPreview(
         enabled = style.autoZoom,
         hasOverride = pendingDrag != null,
         zooming = zooming.value,
+        dragging = zooming.value,
         outer = view.toSize().toRect().deflate(viewPadding),
         mat = viewMat, local = state.region,
         defaultRegion = state.defaultRegion,
@@ -90,6 +92,7 @@ fun CropperPreview(
                 pending = pendingDrag,
                 onPending = { pendingDrag = it },
                 zooming = zooming,
+                dragging = dragging,
                 zoomLimits = zoomLimits,
             )
     ) {
@@ -115,6 +118,7 @@ fun BringToView(
     enabled: Boolean,
     hasOverride: Boolean,
     zooming: Boolean,
+    dragging: Boolean,
     outer: Rect,
     mat: ViewMat,
     local: Rect,
@@ -130,7 +134,7 @@ fun BringToView(
     var overrideBlock by remember { mutableStateOf(false) }
     var pendingAutoZoom by remember { mutableStateOf(true) }
 
-    if (zooming) {
+    if (zooming || dragging) {
         // avoid annoying snap when user has started zooming immediately after crop window change
         pendingAutoZoom = false
     }
@@ -143,8 +147,8 @@ fun BringToView(
         mat.setOriginalScale(defaultRegion.applyTransformation(transform), outer)
     }
 
-    LaunchedEffect(zooming, hasOverride, outer, local) autoZoom@{
-        if (zooming || !pendingAutoZoom) {
+    LaunchedEffect(zooming, dragging, hasOverride, outer, local) autoZoom@{
+        if (zooming || dragging || !pendingAutoZoom) {
             return@autoZoom
         }
         if (hasOverride) overrideBlock = true
