@@ -92,7 +92,7 @@ fun IntRect.constrainOffset(bounds: IntRect): IntRect {
 fun Rect.resize(
     handle: Offset,
     delta: Offset,
-    maxZoomSize: Int,
+    maxZoomSize: Float,
 ): Rect {
     var (l, t, r, b) = this
     val (dx, dy) = delta

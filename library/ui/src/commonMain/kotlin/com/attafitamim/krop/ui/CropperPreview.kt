@@ -64,8 +64,8 @@ fun CropperPreview(
             bottom = cropRect.bottom + (TouchAreaOffsetPx * 2)
         )
     }
-    val zoomLimits = remember(state.src.size, view) {
-        ZoomLimits(state.src.size, view)
+    val zoomLimits = remember(state.src.size, view, style.minCropSizePx) {
+        ZoomLimits(state.src.size, view, style.minCropSizePx)
     }
     BringToView(
         enabled = style.autoZoom,

@@ -58,6 +58,9 @@ interface CropperStyle {
 
     /** Controls how the view is zoomed using the mouse wheel */
     val wheelZoomConfig: WheelZoomConfig
+
+    /** The minimal size of the crop region in pixels */
+    val minCropSizePx: Float
 }
 
 val DefaultCropperStyle: CropperStyle by lazy { cropperStyle() }
@@ -95,6 +98,7 @@ fun cropperStyle(
     aspects: List<AspectRatio> = DefaultAspectRatios,
     autoZoom: Boolean = true,
     wheelZoomConfig: WheelZoomConfig = wheelZoomConfig(),
+    minCropSizePx: Float = 50f,
 ): CropperStyle = object : CropperStyle {
     override val touchRad: Dp get() = touchRad
     override val backgroundColor: Color get() = backgroundColor
@@ -103,6 +107,7 @@ fun cropperStyle(
     override val aspects get() = aspects
     override val autoZoom: Boolean get() = autoZoom
     override val wheelZoomConfig: WheelZoomConfig get() = wheelZoomConfig
+    override val minCropSizePx: Float get() = minCropSizePx
 
     override fun DrawScope.drawCropRect(region: Rect) {
         val strokeWidth = rectStrokeWidth.toPx()

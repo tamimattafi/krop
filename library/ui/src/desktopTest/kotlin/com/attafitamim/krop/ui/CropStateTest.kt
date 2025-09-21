@@ -44,7 +44,7 @@ class CropStateTest {
     fun `Region is inside image rect after resize`() {
         state.region = state.region
             .scale(.5f, .5f)
-            .resize(Offset(1f, 1f), Offset(size.width * 2f, size.height * 2f), 10)
+            .resize(Offset(1f, 1f), Offset(size.width * 2f, size.height * 2f), 10f)
         assertRegionInImageRect()
     }
 
@@ -65,7 +65,7 @@ class CropStateTest {
 
     private fun Rect.transformCropRect(): Rect {
         return scale(.5f, .5f)
-            .resize(Offset(1f, 1f), Offset(size.width * 2f, size.height * 2f), 10)
+            .resize(Offset(1f, 1f), Offset(size.width * 2f, size.height * 2f), 10f)
     }
 
     private fun assertRegionInImageRect() {

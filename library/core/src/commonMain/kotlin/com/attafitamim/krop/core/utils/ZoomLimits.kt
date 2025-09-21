@@ -5,7 +5,7 @@ import androidx.compose.ui.unit.IntSize
 class ZoomLimits(
     originalImageSize: IntSize,
     view: IntSize,
-    val minCropSize: Int = 50, // TODO make this a CropperStyle parameter
+    val minCropSize: Float,
 ) {
     val maxFactor: Float
 
@@ -17,7 +17,7 @@ class ZoomLimits(
             originalImageSize.height.coerceAtLeast(view.height)
         } else {
             originalImageSize.width.coerceAtLeast(view.width)
-        }.toFloat()
+        }
 
         maxFactor = fullImageSize / minCropSize
     }
