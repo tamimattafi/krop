@@ -12,6 +12,8 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.clipRect
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.attafitamim.krop.core.utils.WheelZoomConfig
+import com.attafitamim.krop.core.utils.wheelZoomConfig
 
 /** Image Aspect ratio. eg : AspectRatio(16, 9) */
 data class AspectRatio(val x: Int, val y: Int)
@@ -53,6 +55,9 @@ interface CropperStyle {
     /** Whether the view needs to be zoomed in automatically
      * to fit the crop rect after any change */
     val autoZoom: Boolean
+
+    /** Controls how the view is zoomed using the mouse wheel */
+    val wheelZoomConfig: WheelZoomConfig
 }
 
 val DefaultCropperStyle: CropperStyle by lazy { cropperStyle() }
@@ -89,6 +94,7 @@ fun cropperStyle(
     shapes: List<CropShape> = DefaultCropShapes,
     aspects: List<AspectRatio> = DefaultAspectRatios,
     autoZoom: Boolean = true,
+    wheelZoomConfig: WheelZoomConfig = wheelZoomConfig(),
 ): CropperStyle = object : CropperStyle {
     override val touchRad: Dp get() = touchRad
     override val backgroundColor: Color get() = backgroundColor
@@ -96,6 +102,7 @@ fun cropperStyle(
     override val shapes: List<CropShape> get() = shapes
     override val aspects get() = aspects
     override val autoZoom: Boolean get() = autoZoom
+    override val wheelZoomConfig: WheelZoomConfig get() = wheelZoomConfig
 
     override fun DrawScope.drawCropRect(region: Rect) {
         val strokeWidth = rectStrokeWidth.toPx()

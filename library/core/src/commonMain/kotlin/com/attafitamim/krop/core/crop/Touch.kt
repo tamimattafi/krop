@@ -11,6 +11,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.round
 import androidx.compose.ui.unit.toOffset
 import com.attafitamim.krop.core.utils.ViewMat
+import com.attafitamim.krop.core.utils.WheelZoomConfig
 import com.attafitamim.krop.core.utils.ZoomLimits
 import com.attafitamim.krop.core.utils.abs
 import com.attafitamim.krop.core.utils.dragState
@@ -36,7 +37,9 @@ fun Modifier.cropperTouch(
     pending: DragHandle?,
     onPending: (DragHandle?) -> Unit,
     zooming: MutableState<Boolean>,
+    dragging: MutableState<Boolean>,
     zoomLimits: ZoomLimits,
+    wheelZoomConfig: WheelZoomConfig,
 ): Modifier = composed {
     val touchRadPx2 = LocalDensity.current.run {
         remember(touchRad, viewMat.scale) { touchRad.toPx() / viewMat.scale }.let { it * it }
@@ -45,9 +48,10 @@ fun Modifier.cropperTouch(
     onGestures(
         rememberGestureState(
             zoom = zoomState(
+                wheelZoomConfig = wheelZoomConfig,
                 begin = { c ->
-                    viewMat.zoomStart(c)
                     zooming.value = true
+                    viewMat.zoomStart(c)
                 },
                 next = { s, c -> viewMat.zoom(c, s, zoomLimits) },
                 done = { zooming.value = false }
@@ -55,29 +59,46 @@ fun Modifier.cropperTouch(
             drag = dragState(
                 begin = { pos ->
                     val localPos = viewMat.invMatrix.map(pos)
-                    handles.findHandle(
-                        region, localPos,
-                        touchRadPx2
-                    )?.let { handle ->
-                        onPending(DragHandle(handle, localPos, region))
+                    val handle = handles.findHandle(
+                        region,
+                        localPos,
+                        touchRadPx2,
+                    )
+
+                    dragging.value = handle == null
+
+                    when {
+                        dragging.value -> viewMat.dragStart(pos)
+                        handle != null -> onPending(DragHandle(handle, localPos, region))
                     }
                 },
                 next = { _, pos, _ ->
-                    pending?.let {
-                        val localPos = viewMat.invMatrix.map(pos)
-                        val delta = (localPos - pending.initialPos).round().toOffset()
-                        val newRegion = if (pending.handle != MoveHandle) {
-                            pending.initialRegion
-                                .resize(pending.handle, delta, zoomLimits.minCropSize)
-                        } else {
-                            pending.initialRegion.translate(delta)
+                    when {
+                        dragging.value -> viewMat.drag(pos)
+                        pending != null -> {
+                            val localPos = viewMat.invMatrix.map(pos)
+                            val delta = (localPos - pending.initialPos).round().toOffset()
+                            val newRegion = if (pending.handle != MoveHandle) {
+                                pending.initialRegion.resize(
+                                    pending.handle,
+                                    delta,
+                                    zoomLimits.minCropSize,
+                                )
+                            } else {
+                                pending.initialRegion.translate(delta)
+                            }
+
+                            onRegion(newRegion)
                         }
-                        onRegion(newRegion)
                     }
                 },
                 done = {
-                    onPending(null)
-                })
+                    when {
+                        dragging.value -> dragging.value = false
+                        pending != null -> onPending(null)
+                    }
+                }
+            )
         )
     )
 }

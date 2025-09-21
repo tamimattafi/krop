@@ -11,13 +11,23 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.input.pointer.PointerEvent
 import androidx.compose.ui.input.pointer.PointerEventPass
+import androidx.compose.ui.input.pointer.PointerEventType
 import androidx.compose.ui.input.pointer.PointerId
 import androidx.compose.ui.input.pointer.PointerInputChange
+import androidx.compose.ui.input.pointer.PointerInputScope
 import androidx.compose.ui.input.pointer.changedToDownIgnoreConsumed
 import androidx.compose.ui.input.pointer.changedToUpIgnoreConsumed
+import androidx.compose.ui.input.pointer.isAltPressed
+import androidx.compose.ui.input.pointer.isCtrlPressed
+import androidx.compose.ui.input.pointer.isMetaPressed
+import androidx.compose.ui.input.pointer.isShiftPressed
 import androidx.compose.ui.input.pointer.pointerInput
+import kotlin.math.exp
 import kotlin.math.max
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 interface GestureState {
@@ -58,16 +68,28 @@ inline fun tapState(
 }
 
 interface ZoomState {
+    val wheelZoomConfig: WheelZoomConfig
     fun onBegin(cx: Float, cy: Float) = Unit
     fun onNext(scale: Float, cx: Float, cy: Float) = Unit
     fun onDone() = Unit
 }
 
+enum class WheelZoomTrigger {
+    Any,
+    Ctrl,
+    Meta,
+    Alt,
+    Shift,
+    CtrlOrMeta,
+}
+
 inline fun zoomState(
+    wheelZoomConfig: WheelZoomConfig = wheelZoomConfig(),
     crossinline begin: (center: Offset) -> Unit = { },
     crossinline done: () -> Unit = {},
     crossinline next: (scale: Float, center: Offset) -> Unit = { _, _ -> },
 ): ZoomState = object : ZoomState {
+    override val wheelZoomConfig = wheelZoomConfig
     override fun onBegin(cx: Float, cy: Float) = begin(Offset(cx, cy))
     override fun onNext(scale: Float, cx: Float, cy: Float) = next(scale, Offset(cx, cy))
     override fun onDone() = done()
@@ -79,7 +101,9 @@ fun rememberGestureState(
     drag: DragState? = null,
     tap: TapState? = null,
 ): GestureState {
-    val zoomState by rememberUpdatedState(newValue = zoom ?: object : ZoomState {})
+    val zoomState by rememberUpdatedState(newValue = zoom ?: object : ZoomState {
+        override val wheelZoomConfig: WheelZoomConfig = wheelZoomConfig()
+    })
     val dragState by rememberUpdatedState(newValue = drag ?: object : DragState {})
     val tapState by rememberUpdatedState(newValue = tap ?: object : TapState {})
     return object : GestureState {
@@ -101,17 +125,17 @@ private data class GestureData(
     var isTap: Boolean = false,
 )
 
-
-fun Modifier.onGestures(state: GestureState): Modifier {
+fun Modifier.onGestures(state: GestureState): Modifier = pointerInput(Unit) {
     var info = GestureData()
-    return pointerInput(Unit) {
-        coroutineScope {
-            launch {
-                detectTapGestures( // Note: currently unused
-                    onLongPress = { state.tap.onLongPress(it.x, it.y, info.maxPointers) },
-                    onTap = { state.tap.onTap(it.x, it.y, info.maxPointers) },
-                )
-            }
+    coroutineScope {
+        launch {
+            detectTapGestures(
+                onLongPress = { state.tap.onLongPress(it.x, it.y, info.maxPointers) },
+                onTap = { state.tap.onTap(it.x, it.y, info.maxPointers) },
+            )
+        }
+
+        launch {
             detectTransformGestures(panZoomLock = true) { c, _, zoom, _ ->
                 if (!(info.isDrag || info.isZoom)) {
                     if (info.pointers == 1) {
@@ -134,36 +158,100 @@ fun Modifier.onGestures(state: GestureState): Modifier {
                 }
             }
         }
-    }.pointerInput(Unit) {
-        awaitEachGesture {
-            info = GestureData()
-            val first = awaitFirstDown(requireUnconsumed = false)
-            info.dragId = first.id
-            info.firstPos = first.position
-            info.pointers = 1
-            info.maxPointers = 1
-            var event: PointerEvent
-            while (info.pointers > 0) {
-                event = awaitPointerEvent(pass = PointerEventPass.Initial)
-                var dragPointer: PointerInputChange? = null
-                for (change in event.changes) {
-                    if (change.changedToDownIgnoreConsumed()) info.pointers++
-                    else if (change.changedToUpIgnoreConsumed()) info.pointers--
-                    info.maxPointers = max(info.maxPointers, info.pointers)
-                    if (change.id == info.dragId) dragPointer = change
+
+        launch {
+            awaitEachGesture {
+                info = GestureData()
+                val first = awaitFirstDown(requireUnconsumed = false)
+                info.dragId = first.id
+                info.firstPos = first.position
+                info.pointers = 1
+                info.maxPointers = 1
+                var event: PointerEvent
+                while (info.pointers > 0) {
+                    event = awaitPointerEvent(pass = PointerEventPass.Initial)
+                    var dragPointer: PointerInputChange? = null
+                    for (change in event.changes) {
+                        if (change.changedToDownIgnoreConsumed()) info.pointers++
+                        else if (change.changedToUpIgnoreConsumed()) info.pointers--
+                        info.maxPointers = max(info.maxPointers, info.pointers)
+                        if (change.id == info.dragId) dragPointer = change
+                    }
+                    if (dragPointer == null) dragPointer =
+                        event.changes.firstOrNull { it.pressed }
+                    if (dragPointer != null) {
+                        info.nextPos = dragPointer.position
+                        if (info.dragId != dragPointer.id) {
+                            info.pos = info.nextPos
+                            info.dragId = dragPointer.id
+                        }
+                    }
                 }
-                if (dragPointer == null) dragPointer =
-                    event.changes.firstOrNull { it.pressed }
-                if (dragPointer != null) {
-                    info.nextPos = dragPointer.position
-                    if (info.dragId != dragPointer.id) {
-                        info.pos = info.nextPos
-                        info.dragId = dragPointer.id
+                if (info.isDrag) state.drag.onDone()
+                if (info.isZoom) state.zoom.onDone()
+            }
+        }
+
+        if (state.zoom.wheelZoomConfig.enabled) {
+            launch { handleScrollWheelZoom(state.zoom, this@coroutineScope) }
+        }
+    }
+}
+
+private suspend fun PointerInputScope.handleScrollWheelZoom(
+    state: ZoomState,
+    coroutineScope: CoroutineScope,
+) {
+    awaitPointerEventScope {
+        var wheelZoomActive = false
+        var wheelEndJob: Job? = null
+
+        fun scheduleWheelEnd(onDone: () -> Unit) {
+            wheelEndJob?.cancel()
+            wheelEndJob = coroutineScope.launch {
+                delay(state.wheelZoomConfig.endTimeoutMillis)
+                onDone()
+            }
+        }
+
+        while (true) {
+            val event = awaitPointerEvent(PointerEventPass.Initial)
+            if (event.type == PointerEventType.Scroll) {
+                var scroll = Offset.Zero
+                for (c in event.changes) scroll += c.scrollDelta
+                if (scroll != Offset.Zero) {
+                    val pos = event.changes.firstOrNull()?.position ?: Offset.Zero
+
+                    val isZoomTrigger = with(event.keyboardModifiers) {
+                        when (state.wheelZoomConfig.trigger) {
+                            WheelZoomTrigger.Any -> true
+                            WheelZoomTrigger.CtrlOrMeta -> isCtrlPressed || isMetaPressed
+                            WheelZoomTrigger.Ctrl -> isCtrlPressed
+                            WheelZoomTrigger.Meta -> isMetaPressed
+                            WheelZoomTrigger.Alt -> isAltPressed
+                            WheelZoomTrigger.Shift -> isShiftPressed
+                        }
+                    }
+
+                    if (isZoomTrigger) {
+                        if (!wheelZoomActive) {
+                            state.onBegin(pos.x, pos.y)
+                            wheelZoomActive = true
+                        }
+                        val scale = exp(-scroll.y * state.wheelZoomConfig.speed)
+                        if (scale != 1f && scale > 0f) {
+                            state.onNext(scale, pos.x, pos.y)
+                        }
+                        scheduleWheelEnd {
+                            if (wheelZoomActive) {
+                                state.onDone()
+                                wheelZoomActive = false
+                            }
+                        }
+                        continue
                     }
                 }
             }
-            if (info.isDrag) state.drag.onDone()
-            if (info.isZoom) state.zoom.onDone()
         }
     }
 }

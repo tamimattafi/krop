@@ -16,6 +16,8 @@ import kotlin.math.min
 interface ViewMat {
     fun zoomStart(center: Offset)
     fun zoom(center: Offset, scale: Float, zoomLimits: ZoomLimits)
+    fun dragStart(point: Offset)
+    fun drag(point: Offset)
     suspend fun fit(inner: Rect, outer: Rect)
     fun setOriginalScale(defaultRegion: Rect, outer: Rect)
     fun snapFit(inner: Rect, outer: Rect)
@@ -26,7 +28,8 @@ interface ViewMat {
 
 fun viewMat() = object : ViewMat {
     private var originalScale: Float = 1f
-    var c0 = Offset.Zero
+    var zoomCenter = Offset.Zero
+    var dragPoint = Offset.Zero
     var mat by mutableStateOf(Matrix(), neverEqualPolicy())
     val inv by derivedStateOf {
         Matrix().apply {
@@ -39,12 +42,12 @@ fun viewMat() = object : ViewMat {
     }
 
     override fun zoomStart(center: Offset) {
-        c0 = center
+        zoomCenter = center
     }
 
     override fun zoom(center: Offset, scale: Float, zoomLimits: ZoomLimits) {
         val s = Matrix().apply {
-            translate(center.x - c0.x, center.y - c0.y)
+            translate(center.x - zoomCenter.x, center.y - zoomCenter.y)
             translate(center.x, center.y)
 
             val currentScale = mat.values[Matrix.ScaleX]
@@ -60,7 +63,19 @@ fun viewMat() = object : ViewMat {
             translate(-center.x, -center.y)
         }
         update { it *= s }
-        c0 = center
+        zoomCenter = center
+    }
+
+    override fun dragStart(point: Offset) {
+        dragPoint = point
+    }
+
+    override fun drag(point: Offset) {
+        val s = Matrix().apply {
+            translate(point.x - dragPoint.x, point.y - dragPoint.y)
+        }
+        update { it *= s }
+        dragPoint = point
     }
 
     inline fun update(op: (Matrix) -> Unit) {
