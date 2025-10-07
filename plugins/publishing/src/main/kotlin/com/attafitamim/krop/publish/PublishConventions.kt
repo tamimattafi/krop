@@ -25,11 +25,15 @@ class PublishConventions : Plugin<Project> {
     mavenPublishing.apply {
       coordinates(group, artifact, version)
       pom(MavenPom::configure)
-      publishToMavenCentral(
-        com.vanniktech.maven.publish.SonatypeHost.CENTRAL_PORTAL,
-        automaticRelease = true
-      )
-      signAllPublications()
+      publishToMavenCentral(automaticRelease = true)
+
+      val isLocalPublication = project.gradle.startParameter.taskNames.any { it ->
+        it.contains("mavenLocal", ignoreCase = true)
+      }
+
+      if (!isLocalPublication) {
+        signAllPublications()
+      }
     }
   }
 }
