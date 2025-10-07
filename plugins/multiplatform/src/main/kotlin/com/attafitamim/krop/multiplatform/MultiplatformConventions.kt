@@ -5,6 +5,8 @@ import org.gradle.api.JavaVersion
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.plugins.JavaPluginExtension
+import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jetbrains.kotlin.gradle.dsl.kotlinExtension
 
@@ -25,10 +27,8 @@ class MultiplatformConventions : Plugin<Project> {
 
       // Android
       androidTarget {
-        compilations.all {
-          it.kotlinOptions {
-            jvmTarget = "17"
-          }
+        compilerOptions {
+          jvmTarget.set(JvmTarget.JVM_17)
         }
       }
 
@@ -43,8 +43,9 @@ class MultiplatformConventions : Plugin<Project> {
       }
 
       // Wasm
-      @OptIn(org.jetbrains.kotlin.gradle.targets.js.dsl.ExperimentalWasmDsl::class)
+      @OptIn(ExperimentalWasmDsl::class)
       wasmJs {
+        browser()
         binaries.executable()
       }
 
