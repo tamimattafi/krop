@@ -99,7 +99,7 @@ kotlin {
 
 android {
     namespace = "com.attafitamim.krop"
-    compileSdk = 35
+    compileSdk = 36
 
     sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
     sourceSets["main"].res.srcDirs("src/androidMain/res")
@@ -108,7 +108,7 @@ android {
     defaultConfig {
         applicationId = "com.attafitamim.krop"
         minSdk = 21
-        targetSdk = 35
+        targetSdk = 36
         versionCode = 1
         versionName = "1.0"
     }
