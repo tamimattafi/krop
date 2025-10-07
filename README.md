@@ -25,12 +25,13 @@ Version:
 
 Compatibility:
 
-| Krop version | Kotlin version | Compose version |
-|--------------|----------------|-----------------|
-| 0.2.0        | 2.1.21         | 1.8.0           |
-| 0.1.4        | 2.0            | 1.7             |
-| 0.1.2        | 2.0            | 1.6             |
-| 0.1.0        | 1.9            | 1.6             |
+| Krop version   | Kotlin version | Compose version |
+|----------------|----------------|-----------------|
+| 0.3.0-alpha01  | 2.2.20         | 1.9.0           |
+| 0.2.0          | 2.1.21         | 1.8.0           |
+| 0.1.4          | 2.0            | 1.7             |
+| 0.1.2          | 2.0            | 1.6             |
+| 0.1.0          | 1.9            | 1.6             |
 
 **Option 1:** Add the `ui` module to use the crop dialog out of the box:
 ```kotlin

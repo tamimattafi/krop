@@ -12,7 +12,7 @@ private const val ROOT_MODULE_NAME = "library"
 
 class PublishConventions : Plugin<Project> {
 
-  private val version = "0.2.0"
+  private val version = "0.3.0-alpha01"
   private val group = "com.attafitamim.krop"
 
   override fun apply(project: Project) {
