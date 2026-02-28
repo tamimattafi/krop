@@ -24,7 +24,7 @@ jobs:
           java-version: 17
 
       - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v4
+        uses: gradle/actions/setup-gradle@v5
 
       - name: Build & Test
         run: ./gradlew assembleRelease assembleDebugAndroidTest
@@ -43,7 +43,7 @@ jobs:
           java-version: 17
 
       - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v4
+        uses: gradle/actions/setup-gradle@v5
 
       - name: Build & Test
         run: ./gradlew desktopJar desktopTest
@@ -62,7 +62,7 @@ jobs:
           java-version: 17
 
       - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v4
+        uses: gradle/actions/setup-gradle@v5
 
       - name: Build & Test
         run: ./gradlew iosArm64MainKlibrary iosX64MainKlibrary iosSimulatorArm64MainKlibrary iosSimulatorArm64Test
@@ -81,7 +81,7 @@ jobs:
           java-version: 17
 
       - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v4
+        uses: gradle/actions/setup-gradle@v5
 
       - name: Build & Test
         run: ./gradlew kotlinUpgradeYarnLock kotlinWasmUpgradeYarnLock jsJar wasmJsJar jsBrowserTest wasmJsBrowserTest
