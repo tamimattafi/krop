@@ -12,7 +12,7 @@ android-gradle-plugin = "8.13.2"
 android-activity-compose = "1.12.4"
 androidx-lifecycle = "2.9.6"
 android-test-runner = "1.7.0"
-androidx-collection = "1.5.0"
+androidx-collection = "1.6.0"
 
 # FileKit
 filekit = "0.13.0"
