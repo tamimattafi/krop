@@ -10,7 +10,7 @@ compose-material = "1.7.3"
 # Android
 android-gradle-plugin = "8.13.2"
 android-activity-compose = "1.13.0"
-androidx-lifecycle = "2.9.6"
+androidx-lifecycle = "2.10.0"
 android-test-runner = "1.7.0"
 androidx-collection = "1.6.0"
 
