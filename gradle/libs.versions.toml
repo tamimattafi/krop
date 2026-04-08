@@ -23,7 +23,7 @@ maven-publish = "0.36.0"
 # Testing
 junit = "4.13.2"
 android-exif = "1.4.2"
-metadata-extractor = "2.19.0"
+metadata-extractor = "2.20.0"
 
 [libraries]
 # Kotlin
