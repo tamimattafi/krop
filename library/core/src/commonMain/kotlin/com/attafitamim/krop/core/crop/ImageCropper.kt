@@ -91,8 +91,12 @@ interface ImageCropper {
      * the returned [CropRegion] to re-apply the crop on demand. Suspends until the
      * session ends (accept / cancel / load error). [createSrc] builds the
      * [ImageSrc] to crop.
+     *
+     * Pass [initial] to seed the session at a previously-saved [CropRegion], so a
+     * "re-crop" opens exactly where the user left off instead of the full image.
      */
     suspend fun cropRegion(
+        initial: CropRegion? = null,
         createSrc: suspend () -> ImageSrc?
     ): CropRegionResult
 }
@@ -119,17 +123,19 @@ suspend fun ImageCropper.crop(
 
 /**
  * [cropRegion] overload sourcing the session from an in-memory [bmp]. Returns the
- * crop geometry for non-destructive use.
+ * crop geometry for non-destructive use. Pass [initial] to seed a re-crop.
  */
 suspend fun ImageCropper.cropRegion(
-    bmp: ImageBitmap
-): CropRegionResult = cropRegion {
+    bmp: ImageBitmap,
+    initial: CropRegion? = null
+): CropRegionResult = cropRegion(initial) {
     ImageBitmapSrc(bmp)
 }
 
 suspend fun ImageCropper.cropRegion(
-    imageSrc: ImageSrc?
-): CropRegionResult = cropRegion {
+    imageSrc: ImageSrc?,
+    initial: CropRegion? = null
+): CropRegionResult = cropRegion(initial) {
     imageSrc
 }
 
@@ -150,7 +156,8 @@ fun imageCropper(): ImageCropper = object : ImageCropper {
         maxResultSize: IntSize?,
         createSrc: suspend () -> ImageSrc?
     ): CropResult {
-        val newCrop = runSession(createSrc) ?: return CropError.LoadingError
+        val newCrop = runSession(initial = null, createSrc = createSrc)
+            ?: return CropError.LoadingError
         if (!newCrop.accepted) return CropResult.Cancelled
         return withLoading(CropperLoading.SavingResult) {
             val result = newCrop.createResult(maxResultSize)
@@ -160,9 +167,11 @@ fun imageCropper(): ImageCropper = object : ImageCropper {
     }
 
     override suspend fun cropRegion(
+        initial: CropRegion?,
         createSrc: suspend () -> ImageSrc?
     ): CropRegionResult {
-        val newCrop = runSession(createSrc) ?: return CropRegionResult.LoadingError
+        val newCrop = runSession(initial = initial, createSrc = createSrc)
+            ?: return CropRegionResult.LoadingError
         if (!newCrop.accepted) return CropRegionResult.Cancelled
         return CropRegionResult.Success(
             CropRegion(
@@ -174,14 +183,17 @@ fun imageCropper(): ImageCropper = object : ImageCropper {
     }
 
     /**
-     * Prepares the image, starts a crop session, and suspends until it ends.
-     * Returns the (possibly un-accepted) [CropState], or null if the image
-     * failed to load. Shared by [crop] and [cropRegion].
+     * Prepares the image, starts a crop session (optionally seeded at [initial]),
+     * and suspends until it ends. Returns the (possibly un-accepted) [CropState],
+     * or null if the image failed to load. Shared by [crop] and [cropRegion].
      */
-    private suspend fun runSession(createSrc: suspend () -> ImageSrc?): CropState? {
+    private suspend fun runSession(
+        initial: CropRegion?,
+        createSrc: suspend () -> ImageSrc?
+    ): CropState? {
         cropState = null
         val src = withLoading(CropperLoading.PreparingImage) { createSrc() } ?: return null
-        val newCrop = cropState(src) { cropState = null }
+        val newCrop = cropState(src, initial) { cropState = null }
         cropState = newCrop
         cropStateFlow.takeWhile { it === newCrop }.collect()
         return newCrop
