@@ -52,7 +52,9 @@ suspend fun renderCropRegion(
     return state.createResult(maxSize)
 }
 
-/** [renderCropRegion] overload sourcing from an in-memory [bmp]. */
+/**
+ * [renderCropRegion] overload sourcing from an in-memory [bmp].
+ */
 suspend fun renderCropRegion(
     bmp: ImageBitmap,
     cropRegion: CropRegion,
