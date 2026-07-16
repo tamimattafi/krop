@@ -7,6 +7,8 @@ import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.Paint
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.toSize
+import com.attafitamim.krop.core.images.ImageBitmapSrc
+import com.attafitamim.krop.core.images.ImageSrc
 import com.attafitamim.krop.core.images.getDecodeParams
 import com.attafitamim.krop.core.utils.atOrigin
 import com.attafitamim.krop.core.utils.coerceAtMost
@@ -28,6 +30,36 @@ suspend fun CropState.createResult(
         .onFailure { it.printStackTrace() }
         .getOrNull()
 }
+
+/**
+ * Renders the crop described by [cropRegion] onto [src] **off-screen** — the
+ * non-interactive counterpart of [ImageCropper.cropRegion]. Produces the cropped
+ * image on demand from a persisted [CropRegion] (non-destructive cropping) via
+ * the same pipeline the interactive cropper uses, so the result matches what the
+ * user saw. [maxSize] scales the result down if provided. Returns null if the
+ * image could not be decoded.
+ */
+suspend fun renderCropRegion(
+    src: ImageSrc,
+    cropRegion: CropRegion,
+    maxSize: IntSize? = DefaultMaxCropSize,
+): ImageBitmap? {
+    val state = cropState(src)
+    // Order matters: the region setter constrains against the transformed image
+    // bounds, so apply the transform first.
+    state.transform = cropRegion.transform
+    state.region = cropRegion.region
+    return state.createResult(maxSize)
+}
+
+/**
+ * [renderCropRegion] overload sourcing from an in-memory [bmp].
+ */
+suspend fun renderCropRegion(
+    bmp: ImageBitmap,
+    cropRegion: CropRegion,
+    maxSize: IntSize? = DefaultMaxCropSize,
+): ImageBitmap? = renderCropRegion(ImageBitmapSrc(bmp), cropRegion, maxSize)
 
 suspend fun CropState.doCreateResult(maxSize: IntSize?): ImageBitmap? {
     val finalSize = region.size

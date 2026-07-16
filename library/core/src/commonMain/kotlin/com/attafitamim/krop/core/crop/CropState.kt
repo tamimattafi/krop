@@ -41,9 +41,10 @@ interface CropState {
 
 fun cropState(
     src: ImageSrc,
+    initial: CropRegion? = null,
     onDone: () -> Unit = {},
 ): CropState = object : CropState {
-    val defaultTransform: ImgTransform = ImgTransform.Identity
+    val defaultTransform: ImgTransform = initial?.transform ?: ImgTransform.Identity
     private var defaultShape: CropShape = RectCropShape
     private var defaultAspectLock: Boolean = false
     private var defaultClipResultToShape: Boolean = true
@@ -57,9 +58,12 @@ fun cropState(
         }
 
     override val defaultRegion = src.size.toSize().toRect()
-    private var firstRegion: Rect = defaultRegion
+    // When [initial] is supplied the session opens seeded at that crop (re-crop
+    // "where you left off") instead of the full-image / style-aspect default.
+    private val initialRegion: Rect? = initial?.region
+    private var firstRegion: Rect = initialRegion ?: defaultRegion
 
-    private var _region by mutableStateOf(defaultRegion)
+    private var _region by mutableStateOf(firstRegion)
     override var region
         get() = _region
         set(value) {
@@ -90,9 +94,13 @@ fun cropState(
             shape = it
         }
 
-        firstRegion = style.aspects.firstOrNull()?.let {
-            this.region.setAspect(it)
-        } ?: defaultRegion
+        // A seeded initial region wins over the style's default aspect, so
+        // re-crop opens exactly where the user left off.
+        firstRegion = initialRegion
+            ?: style.aspects.firstOrNull()?.let {
+                this.region.setAspect(it)
+            }
+            ?: defaultRegion
         _region = firstRegion
 
         defaultAspectLock = (style.aspects.size == 1).also {
